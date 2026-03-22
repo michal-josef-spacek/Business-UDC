@@ -80,19 +80,19 @@ Readonly::Hash our %OPERATORS => (
 		name => 'addition',
 		precedence => 10,
 		associativity => 'left',
-		right_types => [qw(NUMBER AUX_GROUP AUX_TIME AUX_LANG)],
+		right_types => [qw(AUX_GROUP AUX_LANG AUX_TIME NUMBER)],
 	},
 	':' => {
 		name => 'relation',
 		precedence => 20,
 		associativity => 'left',
-		right_types => [qw(NUMBER AUX_GROUP AUX_TIME AUX_LANG)],
+		right_types => [qw(AUX_GROUP AUX_LANG AUX_TIME NUMBER)],
 	},
 	'/' => {
 		name => 'consecutive_extension',
 		precedence => 15,
 		associativity => 'left',
-		right_types => [qw(NUMBER AUX_DOT AUX_GROUP AUX_TIME AUX_LANG)],
+		right_types => [qw(AUX_DOT AUX_GROUP AUX_LANG AUX_TIME NUMBER)],
 	},
 );
 
