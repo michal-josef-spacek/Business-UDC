@@ -172,7 +172,7 @@ sub can_follow_primary {
 		return 0;
 	} elsif ($type eq 'APOS_AUX') {
 		if (defined $primary_type
-			&& any { $primary_type eq $_ } qw(AUX_DOT AUX_GROUP AUX_LANG AUX_TIME FORM NUMBER)) {
+			&& any { $primary_type eq $_ } qw(APOS_AUX AUX_DOT AUX_GROUP AUX_LANG AUX_TIME FORM NUMBER)) {
 
 			return 1;
 		}
