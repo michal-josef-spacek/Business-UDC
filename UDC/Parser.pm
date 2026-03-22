@@ -4,6 +4,8 @@ use base qw(Exporter);
 use strict;
 use warnings;
 
+use Business::UDC::Grammar qw(can_follow_primary is_operator_token is_primary_token
+	is_valid_operator);
 use Error::Pure qw(err);
 use Readonly;
 
@@ -70,7 +72,10 @@ sub _parse_expression {
 	my $left = _parse_term($state);
 
 	while (my $tok = _peek($state)) {
-		if ($tok->{'type'} ne 'OP') {
+		if (! is_operator_token($tok->{'type'})) {
+			last;
+		}
+		if (! is_valid_operator($tok->{'value'})) {
 			last;
 		}
 
@@ -95,7 +100,7 @@ sub _parse_primary {
 	my $tok = _peek($state)
 		or err 'Expected term but reached end of input.';
 
-	if ($tok->{'type'} =~ /^(?:NUMBER|AUX_GROUP|AUX_TIME|AUX_LANG)$/) {
+	if (is_primary_token($tok->{'type'})) {
 		_consume($state);
 		return {
 			'type' => $tok->{'type'},
@@ -115,7 +120,7 @@ sub _parse_term {
 
 	my @modifiers;
 	while (my $tok = _peek($state)) {
-		if ($tok->{'type'} !~ m/^(?:AUX_GROUP|AUX_TIME|AUX_LANG|FORM)$/ms) {
+		if (! can_follow_primary($tok->{'type'})) {
 			last;
 		}
 
