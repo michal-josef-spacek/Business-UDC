@@ -127,7 +127,7 @@ sub can_follow_primary {
 
 	if ($type eq 'FORM') {
 		if (defined $primary_type
-			&& any { $primary_type eq $_ } qw(NUMBER AUX_GROUP AUX_LANG AUX_TIME)) {
+			&& any { $primary_type eq $_ } qw(AUX_DOT AUX_GROUP AUX_LANG AUX_TIME NUMBER)) {
 
 			return 1;
 		}
