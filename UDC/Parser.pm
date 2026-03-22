@@ -176,7 +176,7 @@ sub _tokenize {
 			next;
 		}
 
-		if ($input =~ /\G(-\d+)/gc) {
+		if ($input =~ /\G(-\d+(?:\.\d+)*)/gc) {
 			push @tokens, {
 				type => 'FORM',
 				value => $1,

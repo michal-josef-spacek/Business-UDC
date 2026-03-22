@@ -3,7 +3,7 @@ use warnings;
 
 use Business::UDC;
 use Readonly;
-use Test::More 'tests' => 12;
+use Test::More 'tests' => 14;
 use Test::NoWarnings;
 
 Readonly::Array our @RIGHT_UDCS => qw(
@@ -13,6 +13,7 @@ Readonly::Array our @RIGHT_UDCS => qw(
 	(075)
 	"19"
 	=111
+	821-312.5
 );
 Readonly::Array our @BAD_UDCS => qw(
 	bad
@@ -20,6 +21,7 @@ Readonly::Array our @BAD_UDCS => qw(
 	:821.111
 	+821.111
 	-31
+	-312.5
 );
 
 # Test.
