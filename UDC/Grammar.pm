@@ -12,13 +12,13 @@ Readonly::Array our @EXPORT_OK => qw(can_be_standalone can_follow_operator
 	can_start_expression_with describe_token_type group_subtype is_modifier_token
 	is_operator_token is_primary_token is_valid_operator operator_info);
 Readonly::Hash our %DESC => (
-	NUMBER => 'main UDC number',
-	PARTIAL_NUMBER => 'partial number for range shorthand',
 	AUX_GROUP => 'parenthesized auxiliary',
-	AUX_TIME => 'quoted time auxiliary',
 	AUX_LANG => 'language auxiliary',
+	AUX_TIME => 'quoted time auxiliary',
 	FORM => 'special auxiliary subdivision',
+	NUMBER => 'main UDC number',
 	OP => 'operator',
+	PARTIAL_NUMBER => 'partial number for range shorthand',
 );
 Readonly::Hash our %TOKEN_RULES => (
 	AUX_GROUP => {
