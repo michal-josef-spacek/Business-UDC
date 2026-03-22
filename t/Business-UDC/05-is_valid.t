@@ -3,7 +3,7 @@ use warnings;
 
 use Business::UDC;
 use Readonly;
-use Test::More 'tests' => 40;
+use Test::More 'tests' => 41;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8 encode_utf8);
 
@@ -32,6 +32,7 @@ Readonly::Array our @RIGHT_UDCS => (
 	decode_utf8('004.738.1Википедия'),
 	"821.124'02-13",
 	'26-244/-245',
+	'364-5-783.2',
 );
 Readonly::Array our @BAD_UDCS => (
 	'bad',
