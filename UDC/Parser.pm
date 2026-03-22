@@ -7,6 +7,7 @@ use warnings;
 use Business::UDC::Grammar qw(can_follow_operator can_follow_primary is_operator_token
 	is_primary_token is_valid_operator);
 use Error::Pure qw(err);
+use List::Util 1.33 qw(any);
 use Readonly;
 
 Readonly::Array our @EXPORT_OK => qw(parse);
