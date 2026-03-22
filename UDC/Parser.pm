@@ -1,0 +1,221 @@
+package Business::UDC::Parser;
+
+use base qw(Exporter);
+use strict;
+use warnings;
+
+use Error::Pure qw(err);
+use Readonly;
+
+Readonly::Array our @EXPORT_OK => qw(parse);
+
+our $VERSION = 0.01;
+
+sub parse {
+	my $input = shift;
+
+	if (! defined $input) {
+		err 'No input provided.';
+	}
+	if ($input !~ /\S/) {
+		err 'Empty input.';
+	}
+
+	my $tokens = _tokenize($input);
+	my $state = {
+		'tokens' => $tokens,
+		'pos' => 0,
+	};
+
+	my $ast = _parse_expression($state);
+
+	if ($state->{'pos'} < @{$state->{'tokens'}}) {
+		my $tok = $state->{'tokens'}[$state->{'pos'}];
+		err "Unexpected token '$tok->{'value'}'.",
+			'position' => $tok->{'pos'},
+		;
+	}
+
+	return {
+		'tokens' => $tokens,
+		'ast' => $ast,
+	};
+}
+
+sub _consume {
+	my $state = shift;
+
+	return $state->{'tokens'}[$state->{'pos'}++];
+}
+
+sub _expect {
+	my ($state, $type) = @_;
+
+	my $tok = _peek($state);
+	if (! $tok) {
+		err "Expected '$type' but reached end of input.";
+	}
+	if ($tok->{'type'} ne $type) {
+		err "Expected $type but got $tok->{type} ('$tok->{value}').",
+			'position' => $tok->{'pos'},
+		;
+	}
+
+	return _consume($state);
+}
+
+sub _parse_expression {
+	my ($state) = @_;
+
+	my $left = _parse_term($state);
+
+	while (my $tok = _peek($state)) {
+		if ($tok->{'type'} ne 'OP') {
+			last;
+		}
+
+		_consume($state);
+
+		my $right = _parse_term($state);
+
+		$left = {
+			type => 'BINARY_OP',
+			operator => $tok->{'value'},
+			left => $left,
+			right => $right,
+		};
+	}
+
+	return $left;
+}
+
+sub _parse_primary {
+	my $state = shift;
+
+	my $tok = _peek($state)
+		or err 'Expected term but reached end of input.';
+
+	if ($tok->{'type'} =~ /^(?:NUMBER|AUX_GROUP|AUX_TIME|AUX_LANG)$/) {
+		_consume($state);
+		return {
+			'type' => $tok->{'type'},
+			'value' => $tok->{'value'},
+		};
+	}
+
+	err "Expected NUMBER or standalone auxiliary but got $tok->{type} ('$tok->{value}').",
+		'position' => $tok->{'pos'},
+	;
+}
+
+sub _parse_term {
+	my $state = shift;
+
+	my $primary = _parse_primary($state);
+
+	my @modifiers;
+	while (my $tok = _peek($state)) {
+		if ($tok->{'type'} !~ m/^(?:AUX_GROUP|AUX_TIME|AUX_LANG|FORM)$/ms) {
+			last;
+		}
+
+		push @modifiers, {
+			'type' => $tok->{'type'},
+			'value' => $tok->{'value'},
+		};
+
+		_consume($state);
+	}
+
+	return {
+		'type' => 'TERM',
+		'primary' => $primary,
+		'modifiers' => \@modifiers,
+	};
+}
+
+sub _peek {
+	my $state = shift;
+
+	return $state->{'tokens'}[$state->{'pos'}];
+}
+
+sub _tokenize {
+	my ($input) = @_;
+	my @tokens;
+
+	pos($input) = 0;
+
+	while (pos($input) < length($input)) {
+		if ($input =~ /\G\s+/gc) {
+			next;
+		}
+
+		my $start = pos($input);
+
+		if ($input =~ /\G(\d+(?:\.\d+)*)/gc) {
+			push @tokens, {
+				type => 'NUMBER',
+				value => $1,
+				pos => $start,
+			};
+			next;
+		}
+
+		if ($input =~ /\G([:+\/])/gc) {
+			push @tokens, {
+				type => 'OP',
+				value => $1,
+				pos => $start,
+			};
+			next;
+		}
+
+		if ($input =~ /\G(-\d+)/gc) {
+			push @tokens, {
+				type => 'FORM',
+				value => $1,
+				pos => $start,
+			};
+			next;
+		}
+
+		if ($input =~ /\G(\([^)]+\))/gc) {
+			push @tokens, {
+				type => 'AUX_GROUP',
+				value => $1,
+				pos => $start,
+			};
+			next;
+		}
+
+		if ($input =~ /\G("[^"]*")/gc) {
+			push @tokens, {
+				type => 'AUX_TIME',
+				value => $1,
+				pos => $start,
+			};
+			next;
+		}
+
+		if ($input =~ /\G(=+[A-Za-z0-9\-]+)/gc) {
+			push @tokens, {
+				type => 'AUX_LANG',
+				value => $1,
+				pos => $start,
+			};
+			next;
+		}
+
+		my $bad = substr($input, $start, 20);
+		err "Unrecognized input near '$bad'.",
+			'position' => $start,
+		;
+	}
+
+	return \@tokens;
+}
+
+1;
+
+__END__
