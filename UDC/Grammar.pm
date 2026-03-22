@@ -4,12 +4,13 @@ use base qw(Exporter);
 use strict;
 use warnings;
 
+use List::Util 1.33 qw(any);
 use Readonly;
 
 Readonly::Array our @EXPORT_OK => qw(can_be_standalone can_follow_operator
-	can_follow_primary can_follow_term can_start_expression_with
-	can_follow_term describe_token_type is_modifier_token is_operator_token
-	is_primary_token is_valid_operator operator_info);
+	can_follow_primary can_follow_term can_precede_number
+	can_start_expression_with describe_token_type group_subtype is_modifier_token
+	is_operator_token is_primary_token is_valid_operator operator_info);
 Readonly::Hash our %DESC => (
 	NUMBER => 'main UDC number',
 	PARTIAL_NUMBER => 'partial number for range shorthand',
@@ -82,13 +83,23 @@ our $VERSION = 0.01;
 sub can_be_standalone {
 	my $type = shift;
 
-	return ($TOKEN_RULES{$type} && $TOKEN_RULES{$type}{'standalone'}) ? 1 : 0;
+	if (! $TOKEN_RULES{$type}) {
+		return 0;
+	}
+
+	if ($type eq 'AUX_GROUP') {
+		return 1;
+	}
+
+	return $TOKEN_RULES{$type}{'standalone'} ? 1 : 0;
 }
 
 sub can_follow_operator {
 	my ($op, $type) = @_;
 
-	return 0 unless is_valid_operator($op);
+	if (! is_valid_operator($op)) {
+		return 0;
+	}
 
 	my %allowed = map { $_ => 1 } @{$OPERATORS{$op}{'right_types'} || []};
 
@@ -96,15 +107,57 @@ sub can_follow_operator {
 }
 
 sub can_follow_primary {
-	my $type = shift;
+	my ($type, $value, $primary_type) = @_;
 
-	return is_modifier_token($type);
+	if (! is_modifier_token($type)) {
+		return 0;
+	}
+
+	if ($type eq 'FORM') {
+		if (defined $primary_type
+			&& any { $primary_type eq $_ } qw(NUMBER AUX_GROUP AUX_LANG AUX_TIME)) {
+
+			return 1;
+		}
+		return 0;
+	} elsif ($type eq 'AUX_GROUP') {
+		my $subtype = group_subtype($value);
+		if ($subtype eq 'AUX_FORM') {
+			return 1;
+		}
+
+		# XXX
+		return 1;
+	} elsif ($type eq 'AUX_TIME') {
+		return 1;
+	} elsif ($type eq 'AUX_LANG') {
+		return 1;
+	}
+
+	return 0;
 }
 
 sub can_follow_term {
 	my $type = shift;
 
 	return is_operator_token($type);
+}
+
+sub can_precede_number {
+	my ($type, $value) = @_;
+
+	return 0 unless defined $type;
+
+	if ($type eq 'AUX_GROUP') {
+		my $subtype = group_subtype($value);
+		return $subtype eq 'AUX_FORM' ? 1 : 0;
+	}
+
+	if ($type eq 'AUX_TIME' || $type eq 'AUX_LANG') {
+		return 0;
+	}
+
+	return 0;
 }
 
 sub can_start_expression_with {
@@ -119,6 +172,22 @@ sub describe_token_type {
 	return $DESC{$type} || 'unknown token';
 }
 
+sub group_subtype {
+	my $value = shift;
+
+	if (! defined $value) {
+		return 'UNKNOWN';
+	}
+
+	# Common auxiliaries of form: (0...)
+	return 'AUX_FORM' if $value =~ /^\(0(?:[^)]*)\)$/;
+
+	# Place and other special auxiliaries typically begin with non-zero digit
+	return 'AUX_OTHER' if $value =~ /^\([1-9][^)]*\)$/;
+
+	return 'UNKNOWN';
+}
+
 sub is_modifier_token {
 	my $type = shift;
 
@@ -128,7 +197,7 @@ sub is_modifier_token {
 sub is_operator_token {
 	my $type = shift;
 
-	return $type eq 'OP' ? 1 : 0;
+	return (defined $type && $type eq 'OP') ? 1 : 0;
 }
 
 sub is_primary_token {

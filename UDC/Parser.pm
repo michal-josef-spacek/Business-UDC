@@ -119,10 +119,60 @@ sub _parse_term {
 	my $state = shift;
 
 	my $primary = _parse_primary($state);
+	if ($primary->{'type'} ne 'NUMBER') {
+		my $next = _peek($state);
+		if ($next && $next->{'type'} eq 'NUMBER') {
+			err "NUMBER cannot follow '$primary->{'value'}'"
+				unless Business::UDC::Grammar::can_precede_number(
+					$primary->{'type'},
+					$primary->{'value'},
+				);
+
+			my $number = _consume($state);
+
+			my @modifiers;
+			while (my $tok = _peek($state)) {
+				if (! can_follow_primary(
+					$tok->{'type'},
+					$tok->{'value'},
+					'NUMBER',
+					$number->{'value'},
+				)) {
+					last;
+				}
+
+				push @modifiers, {
+					'type' => $tok->{'type'},
+					'value' => $tok->{'value'},
+				};
+
+				_consume($state);
+			}
+
+			return {
+				'type' => 'TERM',
+				'prefixes' => [
+					{
+						'type' => $primary->{'type'},
+						'value' => $primary->{'value'},
+					},
+				],
+				'primary' => {
+					'type' => 'NUMBER',
+					'value' => $number->{'value'},
+				},
+				'modifiers' => \@modifiers,
+			};
+		}
+	}
 
 	my @modifiers;
 	while (my $tok = _peek($state)) {
-		if (! can_follow_primary($tok->{'type'})) {
+		if (! can_follow_primary(
+			$tok->{'type'},
+			$tok->{'value'},
+			$primary->{'type'},
+		)) {
 			last;
 		}
 
@@ -145,7 +195,7 @@ sub _parse_term_after_operator {
 	my ($state, $op) = @_;
 
 	my $tok = _peek($state)
-		or die "Expected term after operator '$op'";
+		or err "Expected term after operator '$op'";
 
 	if ($op eq '/' && $tok->{'type'} eq 'PARTIAL_NUMBER') {
 		_consume($state);

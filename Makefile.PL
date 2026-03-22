@@ -22,6 +22,7 @@ requires 'Business::UDC::Parser' => 0;
 requires 'English' => 0;
 requires 'Error::Pure' => 0;
 requires 'Exporter' => 0;
+requires 'List::Util' => 1.33;
 requires 'Readonly' => 0;
 resources 'bugtracker' => 'https://github.com/michal-josef-spacek/Business-UDC/issues';
 resources 'homepage' => 'https://github.com/michal-josef-spacek/Business-UDC';
