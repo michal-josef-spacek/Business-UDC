@@ -58,7 +58,7 @@ sub _expect {
 		err "Expected '$type' but reached end of input.";
 	}
 	if ($tok->{'type'} ne $type) {
-		err "Expected $type but got $tok->{type} ('$tok->{value}').",
+		err "Expected $type but got $tok->{'type'} ('$tok->{'value'}').",
 			'position' => $tok->{'pos'},
 		;
 	}
@@ -80,10 +80,10 @@ sub _parse_expression {
 
 		my $op = _consume($state);
 		my $next = _peek($state)
-			or die "Expected term after operator '$op->{value}'";
-		die "Token '$next->{value}' is not allowed after operator '$op->{value}'"
-			unless can_follow_operator($op->{value}, $next->{type});
-		my $right = _parse_term_after_operator($state, $op->{value});
+			or err "Expected term after operator '$op->{'value'}'";
+		err "Token '$next->{'value'}' is not allowed after operator '$op->{'value'}'"
+			unless can_follow_operator($op->{'value'}, $next->{'type'});
+		my $right = _parse_term_after_operator($state, $op->{'value'});
 
 		$left = {
 			type => 'BINARY_OP',
@@ -110,7 +110,7 @@ sub _parse_primary {
 		};
 	}
 
-	err "Expected NUMBER or standalone auxiliary but got $tok->{type} ('$tok->{value}').",
+	err "Expected NUMBER or standalone auxiliary but got $tok->{'type'} ('$tok->{'value'}').",
 		'position' => $tok->{'pos'},
 	;
 }
@@ -147,11 +147,11 @@ sub _parse_term_after_operator {
 	my $tok = _peek($state)
 		or die "Expected term after operator '$op'";
 
-	if ($op eq '/' && $tok->{type} eq 'PARTIAL_NUMBER') {
+	if ($op eq '/' && $tok->{'type'} eq 'PARTIAL_NUMBER') {
 		_consume($state);
 		return {
 			type  => 'PARTIAL_NUMBER',
-			value => $tok->{value},
+			value => $tok->{'value'},
 		};
 	}
 
