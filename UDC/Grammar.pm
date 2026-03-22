@@ -165,7 +165,7 @@ sub can_follow_primary {
 		return 1;
 	} elsif ($type eq 'ALPHA_SPEC') {
 		if (defined $primary_type
-			&& any { $primary_type eq $_ } qw(NUMBER AUX_GROUP AUX_LANG AUX_TIME)) {
+			&& any { $primary_type eq $_ } qw(AUX_GROUP AUX_LANG AUX_TIME FORM NUMBER)) {
 
 			return 1;
 		}
