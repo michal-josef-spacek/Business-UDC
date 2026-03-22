@@ -135,12 +135,19 @@ sub _parse_term {
 			my $number = _consume($state);
 
 			my @modifiers;
+			my $current_type = 'NUMBER';
+			my $current_value = $number->{'value'};
+			my $has_main_number = 1;
 			while (my $tok = _peek($state)) {
-				if (! can_follow_primary(
+				if ($tok->{'type'} eq 'AUX_DOT') {
+					if (! $has_main_number) {
+						last;
+					}
+				} elsif (! can_follow_primary(
 					$tok->{'type'},
 					$tok->{'value'},
-					'NUMBER',
-					$number->{'value'},
+					$current_type,
+					$current_value,
 				)) {
 					last;
 				}
@@ -149,6 +156,9 @@ sub _parse_term {
 					'type' => $tok->{'type'},
 					'value' => $tok->{'value'},
 				};
+
+				$current_type = $tok->{'type'};
+				$current_value = $tok->{'value'};
 
 				_consume($state);
 			}
@@ -171,11 +181,19 @@ sub _parse_term {
 	}
 
 	my @modifiers;
+	my $current_type = $primary->{'type'};
+	my $current_value = $primary->{'value'};
+	my $has_main_number = ($primary->{'type'} eq 'NUMBER') ? 1 : 0;
 	while (my $tok = _peek($state)) {
-		if (! can_follow_primary(
+		if ($tok->{'type'} eq 'AUX_DOT') {
+			if (! $has_main_number) {
+				last;
+			}
+		} elsif (! can_follow_primary(
 			$tok->{'type'},
 			$tok->{'value'},
-			$primary->{'type'},
+			$current_type,
+			$current_value,
 		)) {
 			last;
 		}
@@ -184,6 +202,9 @@ sub _parse_term {
 			'type' => $tok->{'type'},
 			'value' => $tok->{'value'},
 		};
+
+		$current_type = $tok->{'type'};
+		$current_value = $tok->{'value'};
 
 		_consume($state);
 	}
@@ -201,7 +222,7 @@ sub _parse_term_after_operator {
 	my $tok = _peek($state)
 		or err "Expected term after operator '$op'";
 
-	if ($op eq '/' && $tok->{'type'} eq 'PARTIAL_NUMBER') {
+	if ($op eq '/' && $tok->{'type'} eq 'AUX_DOT') {
 		_consume($state);
 		return {
 			type => 'PARTIAL_NUMBER',
@@ -242,7 +263,7 @@ sub _tokenize {
 
 		if ($input =~ /\G(\.\d+(?:\.\d+)*)/gc) {
 			push @tokens, {
-				type => 'PARTIAL_NUMBER',
+				type => 'AUX_DOT',
 				value => $1,
 				pos => $start,
 			};

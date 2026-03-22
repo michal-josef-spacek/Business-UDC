@@ -13,6 +13,7 @@ Readonly::Array our @EXPORT_OK => qw(can_be_standalone can_follow_operator
 	is_operator_token is_primary_token is_valid_operator operator_info);
 Readonly::Hash our %DESC => (
 	ALPHA_SPEC => 'direct alphabetical specification',
+	AUX_DOT => 'dot auxiliary',
 	AUX_GROUP => 'parenthesized auxiliary',
 	AUX_LANG => 'language auxiliary',
 	AUX_TIME => 'quoted time auxiliary',
@@ -23,6 +24,11 @@ Readonly::Hash our %DESC => (
 );
 Readonly::Hash our %TOKEN_RULES => (
 	ALPHA_SPEC => {
+		standalone => 0,
+		primary => 0,
+		modifier => 1,
+	},
+	AUX_DOT => {
 		standalone => 0,
 		primary => 0,
 		modifier => 1,
@@ -80,7 +86,7 @@ Readonly::Hash our %OPERATORS => (
 		name => 'consecutive_extension',
 		precedence => 15,
 		associativity => 'left',
-		right_types => [qw(NUMBER PARTIAL_NUMBER AUX_GROUP AUX_TIME AUX_LANG)],
+		right_types => [qw(NUMBER AUX_DOT AUX_GROUP AUX_TIME AUX_LANG)],
 	},
 );
 
@@ -113,7 +119,7 @@ sub can_follow_operator {
 }
 
 sub can_follow_primary {
-	my ($type, $value, $primary_type) = @_;
+	my ($type, $value, $primary_type, $primary_value) = @_;
 
 	if (! is_modifier_token($type)) {
 		return 0;
@@ -122,6 +128,13 @@ sub can_follow_primary {
 	if ($type eq 'FORM') {
 		if (defined $primary_type
 			&& any { $primary_type eq $_ } qw(NUMBER AUX_GROUP AUX_LANG AUX_TIME)) {
+
+			return 1;
+		}
+		return 0;
+	} elsif ($type eq 'AUX_DOT') {
+		if (defined $primary_type
+			&& any { $primary_type eq $_ } qw(NUMBER AUX_GROUP)) {
 
 			return 1;
 		}
