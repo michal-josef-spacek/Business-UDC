@@ -204,7 +204,7 @@ sub _parse_term_after_operator {
 	if ($op eq '/' && $tok->{'type'} eq 'PARTIAL_NUMBER') {
 		_consume($state);
 		return {
-			type  => 'PARTIAL_NUMBER',
+			type => 'PARTIAL_NUMBER',
 			value => $tok->{'value'},
 		};
 	}
@@ -296,7 +296,7 @@ sub _tokenize {
 
 		if ($input =~ /\G([A-Za-z][A-Za-z0-9.-]*)/gc) {
 			push @tokens, {
-				type  => 'ALPHA_SPEC',
+				type => 'ALPHA_SPEC',
 				value => $1,
 				pos => $start,
 			};
