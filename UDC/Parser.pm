@@ -114,6 +114,10 @@ sub _parse_primary {
 		err "Alphabetical specification '$tok->{'value'}' cannot appear standalone.";
 	}
 
+	if ($tok->{'type'} eq 'APOS_AUX') {
+		err "Apostrophe auxiliary '$tok->{'value'}' must follow a valid UDC notation.";
+	}
+
 	err "Expected NUMBER or standalone auxiliary but got $tok->{'type'} ('$tok->{'value'}').",
 		'position' => $tok->{'pos'},
 	;
@@ -139,7 +143,7 @@ sub _parse_term {
 			my $current_value = $number->{'value'};
 			my $has_main_number = 1;
 			while (my $tok = _peek($state)) {
-				if ($tok->{'type'} eq 'AUX_DOT') {
+				if (any { $tok->{'type'} eq $_ } qw(APOS_AUX AUX_DOT)) {
 					if (! $has_main_number) {
 						last;
 					}
@@ -318,6 +322,15 @@ sub _tokenize {
 		if ($input =~ /\G([A-Za-z][A-Za-z0-9.-]*)/gc) {
 			push @tokens, {
 				type => 'ALPHA_SPEC',
+				value => $1,
+				pos => $start,
+			};
+			next;
+		}
+
+		if ($input =~ /\G(\'\d+(?:\.\d+)*)/gc) {
+			push @tokens, {
+				type => 'APOS_AUX',
 				value => $1,
 				pos => $start,
 			};

@@ -13,6 +13,7 @@ Readonly::Array our @EXPORT_OK => qw(can_be_standalone can_follow_operator
 	is_operator_token is_primary_token is_valid_operator operator_info);
 Readonly::Hash our %DESC => (
 	ALPHA_SPEC => 'direct alphabetical specification',
+	APOS_AUX => 'apostrophe auxiliary',
 	AUX_DOT => 'dot auxiliary',
 	AUX_GROUP => 'parenthesized auxiliary',
 	AUX_LANG => 'language auxiliary',
@@ -24,6 +25,11 @@ Readonly::Hash our %DESC => (
 );
 Readonly::Hash our %TOKEN_RULES => (
 	ALPHA_SPEC => {
+		standalone => 0,
+		primary => 0,
+		modifier => 1,
+	},
+	APOS_AUX => {
 		standalone => 0,
 		primary => 0,
 		modifier => 1,
@@ -154,6 +160,13 @@ sub can_follow_primary {
 	} elsif ($type eq 'ALPHA_SPEC') {
 		if (defined $primary_type
 			&& any { $primary_type eq $_ } qw(NUMBER AUX_GROUP AUX_LANG AUX_TIME)) {
+
+			return 1;
+		}
+		return 0;
+	} elsif ($type eq 'APOS_AUX') {
+		if (defined $primary_type
+			&& any { $primary_type eq $_ } qw(AUX_DOT AUX_GROUP AUX_LANG AUX_TIME FORM NUMBER)) {
 
 			return 1;
 		}
