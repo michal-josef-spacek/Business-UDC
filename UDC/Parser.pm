@@ -92,6 +92,40 @@ sub _parse_expression {
 			left => $left,
 			right => $right,
 		};
+
+		if ($op->{'value'} eq '/') {
+			my @modifiers;
+			my $current_type = 'NUMBER';
+			my $current_value = undef;
+
+			while (my $next_tok = _peek($state)) {
+				if (! can_follow_primary(
+					$next_tok->{'type'},
+					$next_tok->{'value'},
+					$current_type,
+					$current_value,
+				)) {
+					last;
+				}
+
+				push @modifiers, {
+					type => $next_tok->{'type'},
+					value => $next_tok->{'value'},
+				};
+
+				$current_type = $next_tok->{'type'};
+				$current_value = $next_tok->{'value'};
+
+				_consume($state);
+			}
+			if (@modifiers) {
+				$left = {
+					type => 'TERM',
+					primary => $left,
+					modifiers => \@modifiers,
+				};
+			}
+		}
 	}
 
 	return $left;
