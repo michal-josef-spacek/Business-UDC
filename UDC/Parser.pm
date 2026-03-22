@@ -110,6 +110,10 @@ sub _parse_primary {
 		};
 	}
 
+	if ($tok->{'type'} eq 'ALPHA_SPEC') {
+		err "Alphabetical specification '$tok->{'value'}' cannot appear standalone.";
+	}
+
 	err "Expected NUMBER or standalone auxiliary but got $tok->{'type'} ('$tok->{'value'}').",
 		'position' => $tok->{'pos'},
 	;
@@ -284,6 +288,15 @@ sub _tokenize {
 		if ($input =~ /\G(=+[A-Za-z0-9\-]+)/gc) {
 			push @tokens, {
 				type => 'AUX_LANG',
+				value => $1,
+				pos => $start,
+			};
+			next;
+		}
+
+		if ($input =~ /\G([A-Za-z][A-Za-z0-9.-]*)/gc) {
+			push @tokens, {
+				type  => 'ALPHA_SPEC',
 				value => $1,
 				pos => $start,
 			};

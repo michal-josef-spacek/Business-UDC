@@ -11,6 +11,6 @@ is($obj->error, undef, 'Get error (no error).');
 
 # Test.
 $obj = Business::UDC->new('bad');
-is($obj->error, "Unrecognized input near 'bad'.",
-	'Get error (Unrecognized input near \'bad\'.).');
+is($obj->error, "Alphabetical specification 'bad' cannot appear standalone.",
+	'Get error (Alphabetical specification \'bad\' cannot appear standalone.).');
 # TODO Check error parameters

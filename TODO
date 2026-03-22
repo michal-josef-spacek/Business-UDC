@@ -2,8 +2,12 @@ TODO
 ====
 1. Add doc.
 2. Add tests.
-3. What about term "908(437.2)Jihlava"?
-4.
+4. What about trerm "004.738.1Википедия"?
+Change ALPHA_SPEC to:
+# UTF8 if ($input =~ /\G([\p{L}][\p{L}\p{N}._-]*)/gcu) {
+5.
 
 Applied
 =======
+3. What about term "908(437.2)Jihlava"?
+OK [20260322] skim
