@@ -285,7 +285,7 @@ sub _tokenize {
 			next;
 		}
 
-		if ($input =~ /\G(=+[A-Za-z0-9\-]+)/gc) {
+		if ($input =~ /\G(=+(?:[A-Za-z]+|\d+(?:\.\d+)*))/gc) {
 			push @tokens, {
 				type => 'AUX_LANG',
 				value => $1,
