@@ -235,6 +235,14 @@ sub _parse_term_after_operator {
 		};
 	}
 
+	if ($op eq '/' && $tok->{'type'} eq 'FORM') {
+		_consume($state);
+		return {
+			type => 'PARTIAL_FORM',
+			value => $tok->{'value'},
+		};
+	}
+
 	return _parse_term($state);
 }
 

@@ -21,6 +21,7 @@ Readonly::Hash our %DESC => (
 	FORM => 'special auxiliary subdivision',
 	NUMBER => 'main UDC number',
 	OP => 'operator',
+	PARTIAL_FORM => 'partial form for range shorthand',
 	PARTIAL_NUMBER => 'partial number for range shorthand',
 );
 Readonly::Hash our %TOKEN_RULES => (
@@ -69,6 +70,11 @@ Readonly::Hash our %TOKEN_RULES => (
 		primary => 0,
 		modifier => 0,
 	},
+	PARTIAL_FORM => {
+		standalone => 0,
+		primary => 0,
+		modifier => 0,
+	},
 	PARTIAL_NUMBER => {
 		standalone => 0,
 		primary => 0,
@@ -92,7 +98,7 @@ Readonly::Hash our %OPERATORS => (
 		name => 'consecutive_extension',
 		precedence => 15,
 		associativity => 'left',
-		right_types => [qw(AUX_DOT AUX_GROUP AUX_LANG AUX_TIME NUMBER)],
+		right_types => [qw(AUX_DOT AUX_GROUP AUX_LANG AUX_TIME FORM NUMBER)],
 	},
 );
 
