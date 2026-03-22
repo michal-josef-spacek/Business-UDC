@@ -4,8 +4,8 @@ use base qw(Exporter);
 use strict;
 use warnings;
 
-use Business::UDC::Grammar qw(can_follow_primary is_operator_token is_primary_token
-	is_valid_operator);
+use Business::UDC::Grammar qw(can_follow_operator can_follow_primary is_operator_token
+	is_primary_token is_valid_operator);
 use Error::Pure qw(err);
 use Readonly;
 
@@ -67,10 +67,9 @@ sub _expect {
 }
 
 sub _parse_expression {
-	my ($state) = @_;
+	my $state = shift;
 
 	my $left = _parse_term($state);
-
 	while (my $tok = _peek($state)) {
 		if (! is_operator_token($tok->{'type'})) {
 			last;
@@ -79,9 +78,12 @@ sub _parse_expression {
 			last;
 		}
 
-		_consume($state);
-
-		my $right = _parse_term($state);
+		my $op = _consume($state);
+		my $next = _peek($state)
+			or die "Expected term after operator '$op->{value}'";
+		die "Token '$next->{value}' is not allowed after operator '$op->{value}'"
+			unless can_follow_operator($op->{value}, $next->{type});
+		my $right = _parse_term_after_operator($state, $op->{value});
 
 		$left = {
 			type => 'BINARY_OP',
@@ -139,6 +141,23 @@ sub _parse_term {
 	};
 }
 
+sub _parse_term_after_operator {
+	my ($state, $op) = @_;
+
+	my $tok = _peek($state)
+		or die "Expected term after operator '$op'";
+
+	if ($op eq '/' && $tok->{type} eq 'PARTIAL_NUMBER') {
+		_consume($state);
+		return {
+			type  => 'PARTIAL_NUMBER',
+			value => $tok->{value},
+		};
+	}
+
+	return _parse_term($state);
+}
+
 sub _peek {
 	my $state = shift;
 
@@ -161,6 +180,15 @@ sub _tokenize {
 		if ($input =~ /\G(\d+(?:\.\d+)*)/gc) {
 			push @tokens, {
 				type => 'NUMBER',
+				value => $1,
+				pos => $start,
+			};
+			next;
+		}
+
+		if ($input =~ /\G(\.\d+(?:\.\d+)*)/gc) {
+			push @tokens, {
+				type => 'PARTIAL_NUMBER',
 				value => $1,
 				pos => $start,
 			};

@@ -6,41 +6,74 @@ use warnings;
 
 use Readonly;
 
-Readonly::Array our @EXPORT_OK => qw(can_be_standalone can_follow_primary can_follow_term
-	can_start_expression_with can_follow_term describe_token_type
-	is_modifier_token is_operator_token is_primary_token is_valid_operator
-	operator_info);
+Readonly::Array our @EXPORT_OK => qw(can_be_standalone can_follow_operator
+	can_follow_primary can_follow_term can_start_expression_with
+	can_follow_term describe_token_type is_modifier_token is_operator_token
+	is_primary_token is_valid_operator operator_info);
 Readonly::Hash our %DESC => (
 	NUMBER => 'main UDC number',
+	PARTIAL_NUMBER => 'partial number for range shorthand',
 	AUX_GROUP => 'parenthesized auxiliary',
 	AUX_TIME => 'quoted time auxiliary',
 	AUX_LANG => 'language auxiliary',
 	FORM => 'special auxiliary subdivision',
 	OP => 'operator',
 );
-Readonly::Hash our %TOKEN_KINDS => (
-	NUMBER => 'primary',
-	AUX_GROUP => 'primary_or_modifier',
-	AUX_TIME => 'primary_or_modifier',
-	AUX_LANG => 'primary_or_modifier',
-	FORM => 'modifier_only',
-	OP => 'operator',
+Readonly::Hash our %TOKEN_RULES => (
+	AUX_GROUP => {
+		standalone => 1,
+		primary => 1,
+		modifier => 1,
+	},
+	AUX_LANG => {
+		standalone => 1,
+		primary => 1,
+		modifier => 1,
+	},
+	AUX_TIME => {
+		standalone => 1,
+		primary => 1,
+		modifier => 1,
+	},
+	FORM => {
+		standalone => 0,
+		primary => 0,
+		modifier => 1,
+	},
+	NUMBER => {
+		standalone => 1,
+		primary => 1,
+		modifier => 0,
+	},
+	OP => {
+		standalone => 0,
+		primary => 0,
+		modifier => 0,
+	},
+	PARTIAL_NUMBER => {
+		standalone => 0,
+		primary => 0,
+		modifier => 0,
+	},
 );
 Readonly::Hash our %OPERATORS => (
 	'+' => {
 		name => 'addition',
 		precedence => 10,
 		associativity => 'left',
+		right_types => [qw(NUMBER AUX_GROUP AUX_TIME AUX_LANG)],
 	},
 	':' => {
 		name => 'relation',
 		precedence => 20,
 		associativity => 'left',
+		right_types => [qw(NUMBER AUX_GROUP AUX_TIME AUX_LANG)],
 	},
 	'/' => {
 		name => 'consecutive_extension',
 		precedence => 15,
 		associativity => 'left',
+		right_types => [qw(NUMBER PARTIAL_NUMBER AUX_GROUP AUX_TIME AUX_LANG)],
 	},
 );
 
@@ -49,7 +82,17 @@ our $VERSION = 0.01;
 sub can_be_standalone {
 	my $type = shift;
 
-	return is_primary_token($type);
+	return ($TOKEN_RULES{$type} && $TOKEN_RULES{$type}{'standalone'}) ? 1 : 0;
+}
+
+sub can_follow_operator {
+	my ($op, $type) = @_;
+
+	return 0 unless is_valid_operator($op);
+
+	my %allowed = map { $_ => 1 } @{$OPERATORS{$op}{'right_types'} || []};
+
+	return $allowed{$type} ? 1 : 0;
 }
 
 sub can_follow_primary {
@@ -79,9 +122,7 @@ sub describe_token_type {
 sub is_modifier_token {
 	my $type = shift;
 
-	my $k = $TOKEN_KINDS{$type};
-
-	return defined $k && ($k eq 'modifier_only' || $k eq 'primary_or_modifier') ? 1 : 0;
+	return ($TOKEN_RULES{$type} && $TOKEN_RULES{$type}{'modifier'}) ? 1 : 0;
 }
 
 sub is_operator_token {
@@ -93,9 +134,7 @@ sub is_operator_token {
 sub is_primary_token {
 	my $type = shift;
 
-	my $k = $TOKEN_KINDS{$type};
-
-	return defined $k && ($k eq 'primary' || $k eq 'primary_or_modifier') ? 1 : 0;
+	return ($TOKEN_RULES{$type} && $TOKEN_RULES{$type}{'primary'}) ? 1 : 0;
 }
 
 sub is_valid_operator {
