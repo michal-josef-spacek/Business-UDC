@@ -5,7 +5,8 @@ TODO
 4. What about trerm "004.738.1Википедия"?
 Change ALPHA_SPEC to:
 # UTF8 if ($input =~ /\G([\p{L}][\p{L}\p{N}._-]*)/gcu) {
-5.
+5. There was '82‑343' in Wikipedia
+6.
 
 Applied
 =======
