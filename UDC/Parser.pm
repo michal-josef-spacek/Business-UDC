@@ -319,7 +319,7 @@ sub _tokenize {
 			next;
 		}
 
-		if ($input =~ /\G([A-Za-z][A-Za-z0-9.-]*)/gc) {
+		if ($input =~ /\G([\p{L}][\p{L}\p{N}._-]*)/gcu) {
 			push @tokens, {
 				type => 'ALPHA_SPEC',
 				value => $1,

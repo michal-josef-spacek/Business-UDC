@@ -3,31 +3,33 @@ use warnings;
 
 use Business::UDC;
 use Readonly;
-use Test::More 'tests' => 37;
+use Test::More 'tests' => 38;
 use Test::NoWarnings;
+use Unicode::UTF8 qw(decode_utf8 encode_utf8);
 
-Readonly::Array our @RIGHT_UDCS => qw(
-	0/9
-	821.111(73)-31"19"
-	621.397:621.395
-	(075)
-	(075)78
-	78(075)
-	"19"
-	=111
-	821-312.5
-	636.1/.5
-	(084.3)911.375
-	911.375(084.3)
-	908(437.2)Jihlava
-	821.133.1MOL
-	334.72:621.3(430)AEG
-	821.111(73)-32=163.42
-	821.111.09
-	821.111(73).09
-	821.111(73).09-32
-	811.161.2'373.21
-	811.161.2'373.21(477.72)(0.75.3)
+Readonly::Array our @RIGHT_UDCS => (
+	'0/9',
+	'821.111(73)-31"19"',
+	'621.397:621.395',
+	'(075)',
+	'(075)78',
+	'78(075)',
+	'"19"',
+	'=111',
+	'821-312.5',
+	'636.1/.5',
+	'(084.3)911.375',
+	'911.375(084.3)',
+	'908(437.2)Jihlava',
+	'821.133.1MOL',
+	'334.72:621.3(430)AEG',
+	'821.111(73)-32=163.42',
+	'821.111.09',
+	'821.111(73).09',
+	'821.111(73).09-32',
+	"811.161.2'373.21",
+	"811.161.2'373.21(477.72)(0.75.3)",
+	decode_utf8('004.738.1Википедия'),
 );
 Readonly::Array our @BAD_UDCS => (
 	'bad',
@@ -51,7 +53,7 @@ Readonly::Array our @BAD_UDCS => (
 my $obj;
 foreach my $right_udc (@RIGHT_UDCS) {
 	$obj = Business::UDC->new($right_udc);
-	is($obj->is_valid, 1, "It is valid ($right_udc).");
+	is($obj->is_valid, 1, encode_utf8("It is valid ($right_udc)."));
 }
 
 # Test.
