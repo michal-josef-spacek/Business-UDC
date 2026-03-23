@@ -5,7 +5,6 @@ use warnings;
 
 use Business::UDC::Parser qw(parse);
 use English;
-use Error::Pure qw(err);
 use Error::Pure::Utils qw(clean);
 
 our $VERSION = 0.01;
@@ -13,13 +12,6 @@ our $VERSION = 0.01;
 # Constructor.
 sub new {
 	my ($class, $source) = @_;
-
-	if (! defined $source) {
-		err 'Missing input UDC string.';
-	}
-	if ($source =~ m/^\s*$/ms) {
-		err 'Empty input UDC string.';
-	}
 
 	# Create object.
 	my $self = bless {
