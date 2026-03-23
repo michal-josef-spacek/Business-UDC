@@ -158,26 +158,7 @@ sub _parse_primary {
 		or err 'Expected term but reached end of input.';
 
 	if ($tok->{'type'} eq 'LBRACK') {
-		my $lbrack = _consume($state);
-		my $expr = _parse_expression($state);
-
-		my $end = _peek($state);
-		if (! $end) {
-			err "Unclosed subgroup '['.",
-				'position' => $lbrack->{'pos'},
-			;
-		}
-		if ($end->{'type'} ne 'RBRACK') {
-			err "Expected closing ']' for subgroup but got '$end->{'value'}'.",
-				'position' => $end->{'pos'},
-			;
-		}
-		_consume($state);
-
-		return {
-			'type' => 'SUBGROUP',
-			'expression' => $expr,
-		};
+		return _parse_subgroup($state);
 	}
 
 	if (is_primary_token($tok->{'type'})) {
@@ -199,6 +180,31 @@ sub _parse_primary {
 	err "Expected NUMBER, subgroup, or standalone auxiliary but got $tok->{'type'} ('$tok->{'value'}').",
 		'position' => $tok->{'pos'},
 	;
+}
+
+sub _parse_subgroup {
+	my $state = shift;
+
+	my $lbrack = _expect($state, 'LBRACK');
+	my $expr = _parse_expression($state);
+
+	my $end = _peek($state);
+	if (! $end) {
+		err "Unclosed subgroup '['.",
+			'position' => $lbrack->{'pos'},
+		;
+	}
+	if ($end->{'type'} ne 'RBRACK') {
+		err "Expected closing ']' for subgroup but got '$end->{'value'}'.",
+			'position' => $end->{'pos'},
+		;
+	}
+	_consume($state);
+
+	return {
+		'type' => 'SUBGROUP',
+		'expression' => $expr,
+	};
 }
 
 sub _parse_term {
@@ -267,6 +273,17 @@ sub _parse_term {
 	my $current_value = $primary->{'value'};
 	my $allow_dot_aux = any { $primary->{'type'} eq $_ } qw(NUMBER SUBGROUP);
 	while (my $tok = _peek($state)) {
+		if ($tok->{'type'} eq 'LBRACK') {
+			my $subgroup = _parse_primary($state);
+
+			push @modifiers, $subgroup;
+
+			$current_type = $subgroup->{'type'};
+			$current_value = undef;
+
+			next;
+		}
+
 		if ($tok->{'type'} eq 'AUX_DOT') {
 			if (! $allow_dot_aux) {
 				last;
