@@ -6,6 +6,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure qw(err);
+use Error::Pure::Utils qw(clean);
 
 our $VERSION = 0.01;
 
@@ -35,6 +36,7 @@ sub new {
 	if ($EVAL_ERROR) {
 		chomp $EVAL_ERROR;
 		$self->{'_error'} = $EVAL_ERROR;
+		clean();
 	} else {
 		$self->{'_ast'} = $res_hr->{'ast'};
 		$self->{'_tokens'} = $res_hr->{'tokens'};

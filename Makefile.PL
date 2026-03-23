@@ -20,6 +20,7 @@ readme_from 'UDC.pm';
 recursive_author_tests('xt');
 requires 'English' => 0;
 requires 'Error::Pure' => 0;
+requires 'Error::Pure::Utils' => 0;
 requires 'Exporter' => 0;
 requires 'List::Util' => 1.33;
 requires 'Readonly' => 0;
