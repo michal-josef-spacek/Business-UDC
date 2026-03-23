@@ -18,7 +18,6 @@ name 'Business-UDC';
 perl_version 5.006002;
 readme_from 'UDC.pm';
 recursive_author_tests('xt');
-requires 'Business::UDC::Parser' => 0;
 requires 'English' => 0;
 requires 'Error::Pure' => 0;
 requires 'Exporter' => 0;
