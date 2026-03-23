@@ -86,6 +86,25 @@ sub _parse_expression {
 			unless can_follow_operator($op->{'value'}, $next->{'type'});
 		my $right = _parse_term_after_operator($state, $op->{'value'});
 
+		if ($op->{'value'} eq '/' && $right->{'type'} eq 'APOS_AUX') {
+			my ($base, $from) = _split_trailing_apos_aux($left);
+			if (! $from) {
+				err "Apostrophe auxiliary range shorthand '$op->{'value'}$right->{'value'}' ".
+					"requires apostrophe auxiliary on the left side.",
+					'position' => $op->{'pos'},
+				;
+			}
+
+			$left = {
+				type => 'APOS_RANGE',
+				base => $base,
+				from => $from->{'value'},
+				to => $right->{'value'},
+			};
+
+			next;
+		}
+
 		$left = {
 			type => 'BINARY_OP',
 			operator => $tok->{'value'},
@@ -277,6 +296,14 @@ sub _parse_term_after_operator {
 		};
 	}
 
+	if ($op eq '/' && $tok->{'type'} eq 'APOS_AUX') {
+		_consume($state);
+		return {
+			type => 'APOS_AUX',
+			value => $tok->{'value'},
+		};
+	}
+
 	return _parse_term($state);
 }
 
@@ -284,6 +311,40 @@ sub _peek {
 	my $state = shift;
 
 	return $state->{'tokens'}[$state->{'pos'}];
+}
+
+sub _split_trailing_apos_aux {
+	my $node = shift;
+
+	if (! defined $node) {
+		return;
+	}
+	if ($node->{'type'} ne 'TERM') {
+		return;
+	}
+	if (! $node->{'modifiers'} || ! @{$node->{'modifiers'}}) {
+		return;
+	}
+
+	my @modifiers = @{$node->{'modifiers'}};
+	my $last = $modifiers[-1];
+	if (! defined $last || $last->{'type'} ne 'APOS_AUX') {
+		return;
+	}
+
+	pop @modifiers;
+
+	my $base = {
+		type => 'TERM',
+		primary => $node->{'primary'},
+		modifiers => \@modifiers,
+	};
+
+	if (exists $node->{'prefixes'}) {
+		$base->{'prefixes'} = [ @{$node->{'prefixes'}} ];
+	}
+
+	return ($base, $last);
 }
 
 sub _tokenize {

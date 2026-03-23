@@ -98,7 +98,7 @@ Readonly::Hash our %OPERATORS => (
 		name => 'consecutive_extension',
 		precedence => 15,
 		associativity => 'left',
-		right_types => [qw(AUX_DOT AUX_GROUP AUX_LANG AUX_TIME FORM NUMBER)],
+		right_types => [qw(APOS_AUX AUX_DOT AUX_GROUP AUX_LANG AUX_TIME FORM NUMBER)],
 	},
 );
 
