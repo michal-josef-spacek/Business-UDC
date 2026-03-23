@@ -139,14 +139,14 @@ sub can_follow_primary {
 
 	if ($type eq 'FORM') {
 		if (defined $primary_type
-			&& any { $primary_type eq $_ } qw(APOS_AUX AUX_DOT AUX_GROUP AUX_LANG AUX_TIME FORM NUMBER)) {
+			&& any { $primary_type eq $_ } qw(APOS_AUX AUX_DOT AUX_GROUP AUX_LANG AUX_TIME FORM NUMBER SUBGROUP)) {
 
 			return 1;
 		}
 		return 0;
 	} elsif ($type eq 'AUX_DOT') {
 		if (defined $primary_type
-			&& any { $primary_type eq $_ } qw(NUMBER AUX_GROUP)) {
+			&& any { $primary_type eq $_ } qw(NUMBER AUX_GROUP SUBGROUP)) {
 
 			return 1;
 		}
@@ -165,14 +165,14 @@ sub can_follow_primary {
 		return 1;
 	} elsif ($type eq 'ALPHA_SPEC') {
 		if (defined $primary_type
-			&& any { $primary_type eq $_ } qw(AUX_GROUP AUX_LANG AUX_TIME FORM NUMBER)) {
+			&& any { $primary_type eq $_ } qw(AUX_GROUP AUX_LANG AUX_TIME FORM NUMBER SUBGROUP)) {
 
 			return 1;
 		}
 		return 0;
 	} elsif ($type eq 'APOS_AUX') {
 		if (defined $primary_type
-			&& any { $primary_type eq $_ } qw(APOS_AUX AUX_DOT AUX_GROUP AUX_LANG AUX_TIME FORM NUMBER)) {
+			&& any { $primary_type eq $_ } qw(APOS_AUX AUX_DOT AUX_GROUP AUX_LANG AUX_TIME FORM NUMBER SUBGROUP)) {
 
 			return 1;
 		}

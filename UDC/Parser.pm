@@ -83,7 +83,8 @@ sub _parse_expression {
 		my $next = _peek($state)
 			or err "Expected term after operator '$op->{'value'}'";
 		err "Token '$next->{'value'}' is not allowed after operator '$op->{'value'}'"
-			unless can_follow_operator($op->{'value'}, $next->{'type'});
+			if $next->{'type'} ne 'LBRACK'
+			&& ! can_follow_operator($op->{'value'}, $next->{'type'});
 		my $right = _parse_term_after_operator($state, $op->{'value'});
 
 		if ($op->{'value'} eq '/' && $right->{'type'} eq 'APOS_AUX') {
@@ -156,6 +157,29 @@ sub _parse_primary {
 	my $tok = _peek($state)
 		or err 'Expected term but reached end of input.';
 
+	if ($tok->{'type'} eq 'LBRACK') {
+		my $lbrack = _consume($state);
+		my $expr = _parse_expression($state);
+
+		my $end = _peek($state);
+		if (! $end) {
+			err "Unclosed subgroup '['.",
+				'position' => $lbrack->{'pos'},
+			;
+		}
+		if ($end->{'type'} ne 'RBRACK') {
+			err "Expected closing ']' for subgroup but got '$end->{'value'}'.",
+				'position' => $end->{'pos'},
+			;
+		}
+		_consume($state);
+
+		return {
+			'type' => 'SUBGROUP',
+			'expression' => $expr,
+		};
+	}
+
 	if (is_primary_token($tok->{'type'})) {
 		_consume($state);
 		return {
@@ -172,7 +196,7 @@ sub _parse_primary {
 		err "Apostrophe auxiliary '$tok->{'value'}' must follow a valid UDC notation.";
 	}
 
-	err "Expected NUMBER or standalone auxiliary but got $tok->{'type'} ('$tok->{'value'}').",
+	err "Expected NUMBER, subgroup, or standalone auxiliary but got $tok->{'type'} ('$tok->{'value'}').",
 		'position' => $tok->{'pos'},
 	;
 }
@@ -372,6 +396,24 @@ sub _tokenize {
 		if ($input =~ /\G(\.\d+(?:\.\d+)*)/gc) {
 			push @tokens, {
 				type => 'AUX_DOT',
+				value => $1,
+				pos => $start,
+			};
+			next;
+		}
+
+		if ($input =~ /\G(\[)/gc) {
+			push @tokens, {
+				type => 'LBRACK',
+				value => $1,
+				pos => $start,
+			};
+			next;
+		}
+
+		if ($input =~ /\G(\])/gc) {
+			push @tokens, {
+				type => 'RBRACK',
 				value => $1,
 				pos => $start,
 			};

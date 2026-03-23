@@ -4,7 +4,6 @@ TODO
 2. Add tests.
 5. There was '82‑343' in Wikipedia
 6. Support for alternative apostrophe? (’)
-7. Implement subgroups.
 8.
 
 Applied
@@ -16,3 +15,6 @@ OK [20260322] skim
 Change ALPHA_SPEC to:
 # UTF8 if ($input =~ /\G([\p{L}][\p{L}\p{N}._-]*)/gcu) {
 OK [20260322] skim
+
+7. Implement subgroups.
+OK [20260323] skim
