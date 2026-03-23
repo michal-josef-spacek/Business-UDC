@@ -4,8 +4,8 @@ use base qw(Exporter);
 use strict;
 use warnings;
 
-use Business::UDC::Grammar qw(can_follow_operator can_follow_primary is_operator_token
-	is_primary_token is_valid_operator);
+use Business::UDC::Grammar qw(can_follow_operator can_follow_primary can_precede_number
+	is_operator_token is_primary_token is_valid_operator);
 use Error::Pure qw(err);
 use List::Util 1.33 qw(any);
 use Readonly;
@@ -214,11 +214,9 @@ sub _parse_term {
 	if ($primary->{'type'} ne 'NUMBER') {
 		my $next = _peek($state);
 		if ($next && $next->{'type'} eq 'NUMBER') {
-			err "NUMBER cannot follow '$primary->{'value'}'"
-				unless Business::UDC::Grammar::can_precede_number(
-					$primary->{'type'},
-					$primary->{'value'},
-				);
+			if (! can_precede_number($primary->{'type'}, $primary->{'value'})) {
+				err "NUMBER cannot follow '$primary->{'value'}'";
+			}
 
 			my $number = _consume($state);
 
