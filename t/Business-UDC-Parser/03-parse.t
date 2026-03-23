@@ -2,7 +2,9 @@ use strict;
 use warnings;
 
 use Business::UDC::Parser qw(parse);
-use Test::More 'tests' => 2;
+use English;
+use Error::Pure::Utils qw(clean);
+use Test::More 'tests' => 4;
 use Test::NoWarnings;
 
 # Test.
@@ -46,3 +48,19 @@ is_deeply(
 	},
 	'Parse UDC (0/9).',
 );
+
+# Test.
+eval {
+	parse();
+};
+is($EVAL_ERROR, "No input provided.\n",
+	"No input provided.");
+clean();
+
+# Test.
+eval {
+	parse('');
+};
+is($EVAL_ERROR, "Empty input.\n",
+	"Empty input.");
+clean();
