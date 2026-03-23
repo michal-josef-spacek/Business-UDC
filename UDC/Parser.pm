@@ -265,13 +265,14 @@ sub _parse_term {
 	my @modifiers;
 	my $current_type = $primary->{'type'};
 	my $current_value = $primary->{'value'};
-	my $has_main_number = ($primary->{'type'} eq 'NUMBER') ? 1 : 0;
+	my $allow_dot_aux = any { $primary->{'type'} eq $_ } qw(NUMBER SUBGROUP);
 	while (my $tok = _peek($state)) {
 		if ($tok->{'type'} eq 'AUX_DOT') {
-			if (! $has_main_number) {
+			if (! $allow_dot_aux) {
 				last;
 			}
-		} elsif (! can_follow_primary(
+		}
+		if (! can_follow_primary(
 			$tok->{'type'},
 			$tok->{'value'},
 			$current_type,
