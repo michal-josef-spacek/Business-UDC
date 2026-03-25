@@ -31,6 +31,8 @@ METHODS
 
     Get error.
 
+    TODO Errors.
+
     Returns string or undef.
 
   "is_valid"
@@ -49,11 +51,6 @@ METHODS
     Get list of tokens defined by tokenization of input UDC string.
 
     Returns reference to array with tokens.
-
-ERRORS
-     new():
-             Empty input UDC string.
-             Missing input UDC string.
 
 EXAMPLE
      use strict;
