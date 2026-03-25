@@ -1,5 +1,6 @@
 0.02
  - Add ACKNOWLEDGEMENTS section to doc.
+ - Fix parsing of '016:[371.035.4:335.55]378(437)'.
  - Regen README file.
 
 0.01 2026-03-25T10:20:10+01:00

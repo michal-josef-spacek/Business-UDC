@@ -193,6 +193,10 @@ sub can_precede_number {
 
 	return 0 unless defined $type;
 
+	if ($type eq 'SUBGROUP') {
+		return 1;
+	}
+
 	if ($type eq 'AUX_GROUP') {
 		my $subtype = group_subtype($value);
 		return $subtype eq 'AUX_FORM' ? 1 : 0;

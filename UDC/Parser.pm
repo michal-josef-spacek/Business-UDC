@@ -215,7 +215,8 @@ sub _parse_term {
 		my $next = _peek($state);
 		if ($next && $next->{'type'} eq 'NUMBER') {
 			if (! can_precede_number($primary->{'type'}, $primary->{'value'})) {
-				err "NUMBER cannot follow '$primary->{'value'}'";
+				my $what = defined $primary->{'value'} ? $primary->{'value'} : $primary->{'type'};
+				err "NUMBER cannot follow '$what'";
 			}
 
 			my $number = _consume($state);
