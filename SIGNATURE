@@ -1,0 +1,68 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.88.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: RIPEMD160
+
+SHA256 48a2a57928920dcf093acaf3090ca4a2d10527c2a946202f96ce62822b676411 Changes
+SHA256 c06cc45fc6d57010cf924da08668c0e571d7ab3f3c56a01470b1a60c5167de49 LICENSE
+SHA256 a8ff4ef99d731d1390f99cca8874ddaa6a7a766d1235c5a6572bdd366f0f5e8a MANIFEST
+SHA256 cf34883d07101cc798c828d48ffda2cd7c778207eb6737d5c88c6a135f0cc970 META.yml
+SHA256 82f22381891772af57e47e4aae59dfff054b36d1be48d4d451bc44a94d6d9fcd Makefile.PL
+SHA256 906b17439bc0f5d5d90c755c4c44c31add12b8321b913ea19dff61601b3b5a06 README
+SHA256 946dedc3418c5b364addb23bf9fda278f75c9f9499541c1362141ee451e3cf25 UDC.pm
+SHA256 0d7eb0c18309610a0fbd7ebad843d96d94e394c7087bc91c609bdc32f350b54a UDC/Grammar.pm
+SHA256 dd3624648a60c3e45ab6497539b1b6d7ae7e8e26dd292fdddc47857c81a57bc8 UDC/Parser.pm
+SHA256 c0ab3491a724916a765617d7b20869eea99a7ede620de48fdad50af31823242a examples/is_valid.pl
+SHA256 cd5397bbe618f5bbd4e12a33b0cf5d21114e771c2dbd0ce28e2135beb52c35a8 inc/Module/Install.pm
+SHA256 8bd506c33fb78f10f6451413e931ca23541fcc4eebe05fcb7c7c9577341223c4 inc/Module/Install/AuthorRequires.pm
+SHA256 1b5430a46a35142ef8914d8c745196fca825defc9dfa7e389299bf294613825e inc/Module/Install/AuthorTests.pm
+SHA256 798836f9ccb8d204b1be31fc3835631f57e9d818b21a8f0d14bfcfb82ff4a72a inc/Module/Install/Base.pm
+SHA256 d64cd4c16f83c5baf11f64a44bea3a0abc060a49da5aba040f0eb01394bf75ab inc/Module/Install/Can.pm
+SHA256 65d7a6098bf3f829e8c1c2865476d3537aa6f0ad0ffc9149e10812c856529043 inc/Module/Install/Fetch.pm
+SHA256 70c4b77acab3ff51dfb318110369607cb109e1c319459249623b787cf3859750 inc/Module/Install/Makefile.pm
+SHA256 14556386168007ce913e669fc08a332ccdb6140246fd55a90c879b5190c1b57a inc/Module/Install/Metadata.pm
+SHA256 53825bc78e4c910b888160bc148c8bc211be58e02b99c8edcbf4854f95faa049 inc/Module/Install/ReadmeFromPod.pm
+SHA256 4c746c02c5cc19bed4c352e76205b4adff4c45ce8310d71294e1b83c059659c2 inc/Module/Install/Win32.pm
+SHA256 d3d9b4583243c470ae895defa4c44564485b53693cba1c50ab0320768f443e97 inc/Module/Install/WriteAll.pm
+SHA256 0e17e83dad9480daf240b3ea1720e08e51e5b591fe69196513339e58eeb26fa9 t/Business-UDC-Grammar/01-use.t
+SHA256 d38d235534fa33fb58ac5871df008cfff334599717f312be0ac2c80af7917789 t/Business-UDC-Grammar/02-version.t
+SHA256 5bb3f03afe54db7efbda929ee698b8481c2ae9d0f42421e5a6642766c5afe132 t/Business-UDC-Parser/01-use.t
+SHA256 c59ad16023fe4ea490e38aa884e153ccc537115b090e6da582a63489300c4ae4 t/Business-UDC-Parser/02-version.t
+SHA256 8f645390fbd94ef81e3097d0e258789a80896b8043a78cddcf2a146d5956788a t/Business-UDC-Parser/03-parse.t
+SHA256 4a08b6d2d9cc59f681c6b7d9dacd33713ec57433596210e195d18758bc6b30cf t/Business-UDC/01-use.t
+SHA256 8ac807531dd1e0ac95cc3d3776b97aa070e907297db43929f2a5c55ca9b66602 t/Business-UDC/02-version.t
+SHA256 eb778ed4ba0e2f3a129075c72de83d3d82daa5ac6b516e4a0b794e3b53dbe5f5 t/Business-UDC/03-new.t
+SHA256 b5f3dfe5004496331af9dc5310197af2bfa6ff60b5ff102f9efbea533e0310f8 t/Business-UDC/04-error.t
+SHA256 c23ae13f09d65449050cc1878b02bda4e8a0afb132404cac8588dd1991d32aee t/Business-UDC/05-is_valid.t
+SHA256 f043e23311eeeae7f91ebde61b904618e6b7230177f551503357d2d65ce02cf3 t/Business-UDC/06-source.t
+SHA256 e72af72771282dcfd389109e6e54eff8c0c5402b8a9e40496487c547cc5cc499 xt/Business-UDC-Grammar/01-pod_coverage.t
+SHA256 e7c81ac716065da5881e69988e3e9ac985b4c553a944de58e3ec742ba84c5022 xt/Business-UDC-Grammar/02-pod.t
+SHA256 e77150d463f370e9ef82f0cee30d303f5a4e99c274861074848c1c7422778abe xt/Business-UDC-Parser/01-pod_coverage.t
+SHA256 b33252f9b9cbc2bfc70a63772ba55a9684fc69a9eb5b98fbe2c85e23e393ff7f xt/Business-UDC-Parser/02-pod.t
+SHA256 e6d5964b3b8ea03266436e8381d286c130a166f57db72ec0685b664d5af5c240 xt/Business-UDC/01-pod_coverage.t
+SHA256 754f3fb1390038e25c1e253deca4fae9ffe942b496452fdd343634a16de45a5f xt/Business-UDC/02-pod.t
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAEBAwAdFiEECAMiMrHl7JYa0rZPZ58rGyDXs5UFAmnDqNEACgkQZ58rGyDX
+s5UvuwwAmiy2IKMsc4qs7tQn62NSDcQNO5yYUjr5f6fplVYQ1ks3kG4vIPffeH6I
+A8SrtluripbMnd7RSG6rxMyDvbh5CJKxf5xhG5fnFSHJBkd9d0mDbxstxguzBojL
+6hq3NmX/0Dy2v/r5IlJhXwdtydZ16V80UFYA0d6OCPg6W8q3IZKmrd5zUB2DpO0F
+rWRR6OVX+WiUvKJGOsc5Uwznt/tomoK8jjPyRWk7YuIYpvP8LB3jBzXtcdnAIx84
+KYklhnJHCIOhPRHbwSKNWVvGel8FnY+4l5Rtgxoi3zRJMaHAWUTzz3L1knQWmQur
+RKmDPj3qRaekV9B7THabGETeLYA8dmS5MPoYaTkSXP0vga6bYqegZ8nJyCw5KXCV
+YE0pD2S2cAuLHlIsCN7orIdCC6277hZMupxhMA/U027nl9wvbbMkQInPY/iM5/k4
+0eb4avKv7Mp4LIp0xL/U215CSK+IVsPlJMPPnzpTVzH2fWQWdmme4Gl+W9jlJmrQ
+hBfBUs8n
+=CNQU
+-----END PGP SIGNATURE-----

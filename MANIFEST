@@ -16,6 +16,7 @@ Makefile.PL
 MANIFEST			This list of files
 META.yml
 README
+SIGNATURE
 t/Business-UDC-Grammar/01-use.t
 t/Business-UDC-Grammar/02-version.t
 t/Business-UDC-Parser/01-use.t
