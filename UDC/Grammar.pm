@@ -102,7 +102,7 @@ Readonly::Hash our %OPERATORS => (
 	},
 );
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 sub can_be_standalone {
 	my $type = shift;
