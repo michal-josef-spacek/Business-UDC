@@ -81,8 +81,8 @@ sub _parse_expression {
 
 		my $op = _consume($state);
 		my $next = _peek($state)
-			or err "Expected term after operator '$op->{'value'}'";
-		err "Token '$next->{'value'}' is not allowed after operator '$op->{'value'}'"
+			or err "Expected term after operator '$op->{'value'}'.";
+		err "Token '$next->{'value'}' is not allowed after operator '$op->{'value'}'."
 			if $next->{'type'} ne 'LBRACK'
 			&& ! can_follow_operator($op->{'value'}, $next->{'type'});
 		my $right = _parse_term_after_operator($state, $op->{'value'});
@@ -92,6 +92,7 @@ sub _parse_expression {
 			if (! $from) {
 				err "Apostrophe auxiliary range shorthand '$op->{'value'}$right->{'value'}' ".
 					"requires apostrophe auxiliary on the left side.",
+
 					'position' => $op->{'pos'},
 				;
 			}
@@ -216,7 +217,7 @@ sub _parse_term {
 		if ($next && $next->{'type'} eq 'NUMBER') {
 			if (! can_precede_number($primary->{'type'}, $primary->{'value'})) {
 				my $what = defined $primary->{'value'} ? $primary->{'value'} : $primary->{'type'};
-				err "NUMBER cannot follow '$what'";
+				err "NUMBER cannot follow '$what'.";
 			}
 
 			my $number = _consume($state);
@@ -319,7 +320,7 @@ sub _parse_term_after_operator {
 	my ($state, $op) = @_;
 
 	my $tok = _peek($state)
-		or err "Expected term after operator '$op'";
+		or err "Expected term after operator '$op'.";
 
 	if ($op eq '/' && $tok->{'type'} eq 'AUX_DOT') {
 		_consume($state);
