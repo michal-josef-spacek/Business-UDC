@@ -1,5 +1,6 @@
 0.03
  - Fix minimal Perl version, because Unicode in regexp.
+ - Simplify regexp ([\p{L}] -> \p{L}).
 
 0.02 2026-03-25T13:25:30+01:00
  - Add ACKNOWLEDGEMENTS section to doc.
