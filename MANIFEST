@@ -24,6 +24,7 @@ t/Business-UDC-Parser/02-version.t
 t/Business-UDC-Parser/03-parse.t
 t/Business-UDC-Tokenizer/01-use.t
 t/Business-UDC-Tokenizer/02-version.t
+t/Business-UDC-Tokenizer/03-tokenize.t
 t/Business-UDC/01-use.t
 t/Business-UDC/02-version.t
 t/Business-UDC/03-new.t

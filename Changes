@@ -1,5 +1,6 @@
 0.03
  - Add description for LBRACK and RBRACK tokens.
+ - Add some tests for tokenizer.
  - Create new Tokenize.pm.
  - Fix minimal Perl version, because Unicode in regexp.
  - Simplify regexp ([\p{L}] -> \p{L}).
