@@ -31,7 +31,7 @@ requires:
   Exporter: 0
   List::Util: 1.33
   Readonly: 0
-  perl: 5.6.2
+  perl: 5.13.1
 resources:
   bugtracker: https://github.com/michal-josef-spacek/Business-UDC/issues
   homepage: https://github.com/michal-josef-spacek/Business-UDC

@@ -15,7 +15,7 @@ author_requires 'Test::Pod' => 0;
 author_requires 'Test::Pod::Coverage' => 0;
 license 'bsd';
 name 'Business-UDC';
-perl_version 5.006002;
+perl_version 5.013010;
 readme_from 'UDC.pm';
 recursive_author_tests('xt');
 requires 'English' => 0;
