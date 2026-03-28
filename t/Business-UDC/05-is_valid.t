@@ -3,7 +3,7 @@ use warnings;
 
 use Business::UDC;
 use Readonly;
-use Test::More 'tests' => 53;
+use Test::More 'tests' => 54;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8 encode_utf8);
 
@@ -62,6 +62,7 @@ Readonly::Array our @BAD_UDCS => (
 	"81/'28",
 	"'27/'28",
 	"81:27/'28",
+	'341.222(4-11):(4-15)]',
 );
 
 # Test.
