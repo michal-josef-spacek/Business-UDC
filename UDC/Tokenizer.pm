@@ -18,108 +18,67 @@ sub tokenize {
 	pos($input) = 0;
 
 	while (pos($input) < length($input)) {
-		if ($input =~ /\G\s+/gc) {
-			next;
-		}
-
 		my $start = pos($input);
 
+		if ($input =~ /\G(\s)/gc) {
+			err "Whitespace is not allowed in UDC string.",
+				'position' => $start,
+				'character' => $1,
+			;
+		}
+
 		if ($input =~ /\G(\d+(?:\.\d+)*)/gc) {
-			push @tokens, {
-				type => 'NUMBER',
-				value => $1,
-				pos => $start,
-			};
+			_push_token(\@tokens, 'NUMBER', $1, $start);
 			next;
 		}
 
 		if ($input =~ /\G(\.\d+(?:\.\d+)*)/gc) {
-			push @tokens, {
-				type => 'AUX_DOT',
-				value => $1,
-				pos => $start,
-			};
+			_push_token(\@tokens, 'AUX_DOT', $1, $start);
 			next;
 		}
 
 		if ($input =~ /\G(\[)/gc) {
-			push @tokens, {
-				type => 'LBRACK',
-				value => $1,
-				pos => $start,
-			};
+			_push_token(\@tokens, 'LBRACK', $1, $start);
 			next;
 		}
 
 		if ($input =~ /\G(\])/gc) {
-			push @tokens, {
-				type => 'RBRACK',
-				value => $1,
-				pos => $start,
-			};
+			_push_token(\@tokens, 'RBRACK', $1, $start);
 			next;
 		}
 
 		if ($input =~ /\G([:+\/])/gc) {
-			push @tokens, {
-				type => 'OP',
-				value => $1,
-				pos => $start,
-			};
+			_push_token(\@tokens, 'OP', $1, $start);
 			next;
 		}
 
 		if ($input =~ /\G(-\d+(?:\.\d+)*)/gc) {
-			push @tokens, {
-				type => 'FORM',
-				value => $1,
-				pos => $start,
-			};
+			_push_token(\@tokens, 'FORM', $1, $start);
 			next;
 		}
 
 		if ($input =~ /\G(\([^)]+\))/gc) {
-			push @tokens, {
-				type => 'AUX_GROUP',
-				value => $1,
-				pos => $start,
-			};
+			_push_token(\@tokens, 'AUX_GROUP', $1, $start);
 			next;
 		}
 
 		if ($input =~ /\G("[^"]*")/gc) {
-			push @tokens, {
-				type => 'AUX_TIME',
-				value => $1,
-				pos => $start,
-			};
+			_push_token(\@tokens, 'AUX_TIME', $1, $start);
 			next;
 		}
 
 		if ($input =~ /\G(=+(?:[A-Za-z]+|\d+(?:\.\d+)*))/gc) {
-			push @tokens, {
-				type => 'AUX_LANG',
-				value => $1,
-				pos => $start,
-			};
+			_push_token(\@tokens, 'AUX_LANG', $1, $start);
 			next;
 		}
 
 		if ($input =~ /\G(\p{L}[\p{L}\p{N}._-]*)/gcu) {
-			push @tokens, {
-				type => 'ALPHA_SPEC',
-				value => $1,
-				pos => $start,
-			};
+			_push_token(\@tokens, 'ALPHA_SPEC', $1, $start);
 			next;
 		}
 
 		if ($input =~ /\G(\'\d+(?:\.\d+)*)/gc) {
-			push @tokens, {
-				type => 'APOS_AUX',
-				value => $1,
-				pos => $start,
-			};
+			_push_token(\@tokens, 'APOS_AUX', $1, $start);
 			next;
 		}
 
@@ -131,6 +90,36 @@ sub tokenize {
 
 	return \@tokens;
 }
+
+sub _check_whitespace {
+	my ($value, $start) = @_;
+
+	if ($value =~ /^(.*?)\s/s) {
+		my $ws_pos = length($1);
+		my $char = substr($value, $ws_pos, 1);
+		err "Whitespace is not allowed in UDC string.",
+			'position' => $start + $ws_pos,
+			'character' => $char,
+		;
+	}
+
+	return;
+}
+
+sub _push_token {
+	my ($tokens_ar, $type, $value, $start) = @_;
+
+	_check_whitespace($value, $start);
+
+	push @{$tokens_ar}, {
+		type => $type,
+		value => $value,
+		pos => $start,
+	};
+
+	return;
+}
+
 
 1;
 

@@ -2,7 +2,9 @@ use strict;
 use warnings;
 
 use Business::UDC::Tokenizer qw(tokenize);
-use Test::More 'tests' => 6;
+use English;
+use Error::Pure::Utils qw(clean);
+use Test::More 'tests' => 7;
 use Test::NoWarnings;
 
 # Test.
@@ -74,3 +76,11 @@ is_deeply(
 	],
 	'Tokenize decimal number with four dots (78.089.6.087.6).',
 );
+
+# Test.
+eval {
+	tokenize('78.089 (123)');
+};
+is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
+	"Whitespace is not allowed in UDC string.");
+clean();
