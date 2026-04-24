@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Tokenizer qw(tokenize);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 7;
+use Test::More 'tests' => 8;
 use Test::NoWarnings;
 
 # Test.
@@ -80,6 +80,14 @@ is_deeply(
 # Test.
 eval {
 	tokenize('78.089 (123)');
+};
+is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
+	"Whitespace is not allowed in UDC string.");
+clean();
+
+# Test.
+eval {
+	tokenize('677.062 +65.01] :687.1(082)');
 };
 is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
 	"Whitespace is not allowed in UDC string.");

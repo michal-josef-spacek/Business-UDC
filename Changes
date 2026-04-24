@@ -1,6 +1,6 @@
 0.04
  - Add detection of space, which is not allowed.
- - Add test for invalid UDC string.
+ - Add tests for invalid UDC string.
 
 0.03 2026-03-26T19:43:52+01:00
  - Add description for LBRACK and RBRACK tokens.
