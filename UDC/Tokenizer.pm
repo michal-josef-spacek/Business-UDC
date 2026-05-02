@@ -9,7 +9,7 @@ use Readonly;
 
 Readonly::Array our @EXPORT_OK => qw(tokenize);
 
-our $VERSION = 0.06;
+our $VERSION = 0.07;
 
 sub tokenize {
 	my ($input) = @_;

@@ -7,7 +7,7 @@ use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(err_get);
 
-our $VERSION = 0.06;
+our $VERSION = 0.07;
 
 # Constructor.
 sub new {
@@ -207,6 +207,6 @@ the Czech Republic (DKRVO 2024–2028), Area 11: Linked Open Data.
 
 =head1 VERSION
 
-0.06
+0.07
 
 =cut
