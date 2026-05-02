@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Tokenizer qw(tokenize);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 11;
+use Test::More 'tests' => 12;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -135,6 +135,26 @@ is_deeply(
 	],
 	'Tokenize string with valid name (591.5-755.43Abramis brama=20).',
 );
+
+# Test.
+$ret_ar = tokenize('004.42 Photo Studio');
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '004.42',
+		},
+		{
+			'pos' => 7,
+			'type' => 'ALPHA_SPEC',
+			'value' => 'Photo Studio',
+		},
+	],
+	'Tokenize string with valid name (004.42 Photo Studio).',
+);
+
 
 # Test.
 $ret_ar = tokenize(decode_utf8('populárně-naučné publikace'));

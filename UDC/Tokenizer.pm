@@ -20,6 +20,10 @@ sub tokenize {
 	while (pos($input) < length($input)) {
 		my $start = pos($input);
 
+		if (@tokens && $input =~ /\G( +)(?=\p{L})/gcu) {
+			next;
+		}
+
 		if ($input =~ /\G(\s)/gc) {
 			err "Whitespace is not allowed in UDC string.",
 				'position' => $start,
