@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Tokenizer qw(tokenize);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 9;
+use Test::More 'tests' => 10;
 use Test::NoWarnings;
 
 # Test.
@@ -96,6 +96,35 @@ is_deeply(
 			'pos' => 12,
 			'type' => 'ALPHA_SPEC',
 			'value' => 'Abramis brama',
+		},
+		{
+			'pos' => 25,
+			'type' => 'AUX_LANG',
+			'value' => '=20',
+		},
+	],
+	'Tokenize string with valid name (591.5-755.43Abramis brama=20).',
+);
+
+# Test.
+$ret_ar = tokenize('597.554.3Abramis brama-15=20');
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '597.554.3',
+		},
+		{
+			'pos' => 9,
+			'type' => 'ALPHA_SPEC',
+			'value' => 'Abramis brama',
+		},
+		{
+			'pos' => 22,
+			'type' => 'FORM',
+			'value' => '-15',
 		},
 		{
 			'pos' => 25,
