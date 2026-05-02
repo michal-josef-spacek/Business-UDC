@@ -1,4 +1,5 @@
 0.06
+ - Add processing of error params in error().
  - Allow name in group.
  - Allow space on the end of name.
  - Change error for alphabetical token on the begin.
