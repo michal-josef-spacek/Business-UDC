@@ -561,7 +561,7 @@ eval {
 	tokenize('78.089 (123)');
 };
 is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
-	"Whitespace is not allowed in UDC string.");
+	"Whitespace is not allowed in UDC string (78.089 (123)).");
 clean();
 
 # Test.
@@ -569,7 +569,7 @@ eval {
 	tokenize('677.062 +65.01] :687.1(082)');
 };
 is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
-	"Whitespace is not allowed in UDC string.");
+	"Whitespace is not allowed in UDC string (677.062 +65.01] :687.1(082)).");
 clean();
 
 # Test.
