@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Tokenizer qw(tokenize);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 21;
+use Test::More 'tests' => 22;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -344,6 +344,35 @@ is_deeply(
 		},
 	],
 	'Tokenize string with name in group (728.82(437.1 Kozel)(083.85)).',
+);
+
+# Test.
+$ret_ar = tokenize('784.96:061.2 "Bojan"');
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '784.96',
+		},
+		{
+			'pos' => 6,
+			'type' => 'OP',
+			'value' => ':',
+		},
+		{
+			'pos' => 7,
+			'type' => 'NUMBER',
+			'value' => '061.2',
+		},
+		{
+			'pos' => 13,
+			'type' => 'ALPHA_SPEC',
+			'value' => '"Bojan"',
+		},
+	],
+	'Tokenize string with quotes in name (784.96:061.2 "Bojan").',
 );
 
 # Test.

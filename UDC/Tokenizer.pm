@@ -24,8 +24,17 @@ sub tokenize {
 			next;
 		}
 
+		if (@tokens && $input =~ /\G( +)(?=")/gc) {
+			next;
+		}
+
 		if (@tokens && $tokens[-1]->{type} eq 'ALPHA_SPEC'
-			&& $input =~ /\G( +)(?=[("])/gc) {
+			&& $input =~ /\G( +)(?=\()/gc) {
+			next;
+		}
+
+		if (@tokens && $tokens[-1]->{type} eq 'ALPHA_SPEC'
+			&& $input =~ /\G( +)(?=\+)/gc) {
 			next;
 		}
 
@@ -76,7 +85,12 @@ sub tokenize {
 		}
 
 		if ($input =~ /\G("[^"]*")/gc) {
-			_push_token(\@tokens, 'AUX_TIME', $1, $start);
+			my $value = $1;
+			if ($value =~ /\p{L}/u) {
+				_push_token(\@tokens, 'ALPHA_SPEC', $value, $start, 1);
+			} else {
+				_push_token(\@tokens, 'AUX_TIME', $value, $start);
+			}
 			next;
 		}
 
@@ -85,7 +99,7 @@ sub tokenize {
 			next;
 		}
 
-		if ($input =~ /\G(\p{L}(?:[\p{L}\p{N}._+#,]|-(?!\d))*(?: +[\p{L}\p{N}._](?:[\p{L}\p{N}._+#,]|-(?!\d))*)*)/gcu) {
+		if ($input =~ /\G(\p{L}(?:[\p{L}\p{N}._#,]|\+(?! )|-(?!\d))*(?: +[\p{L}\p{N}._](?:[\p{L}\p{N}._#,]|\+(?! )|-(?!\d))*)*)/gcu) {
 			_push_token(\@tokens, 'ALPHA_SPEC', $1, $start, 1);
 			next;
 		}
