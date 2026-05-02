@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Tokenizer qw(tokenize);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 12;
+use Test::More 'tests' => 13;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -76,6 +76,20 @@ is_deeply(
 		},
 	],
 	'Tokenize decimal number with four dots (78.089.6.087.6).',
+);
+
+# Test.
+$ret_ar = tokenize('(47+57)');
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'AUX_GROUP',
+			'value' => '(47+57)',
+		},
+	],
+	'Tokenize group ((47+57)).',
 );
 
 # Test.

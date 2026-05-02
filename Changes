@@ -1,4 +1,5 @@
 0.05
+ - Add test for tokenization of group.
  - Add test for tokenization of name only.
  - Allow name with space on the begin.
  - Fix form after the name.
