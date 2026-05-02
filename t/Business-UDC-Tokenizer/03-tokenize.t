@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Tokenizer qw(tokenize);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 19;
+use Test::More 'tests' => 20;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -267,6 +267,35 @@ is_deeply(
 		},
 	],
 	'Tokenize string with , in name (929Komenský,J.A.).',
+);
+
+# Test.
+$ret_ar = tokenize(decode_utf8('92 Fučík,J. "1942/1943"(0:8-94)'));
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => 92,
+		},
+		{
+			'pos' => 3,
+			'type' => 'ALPHA_SPEC',
+			'value' => decode_utf8('Fučík,J.'),
+		},
+		{
+			'pos' => 12,
+			'type' => 'AUX_TIME',
+			'value' => '"1942/1943"',
+		},
+		{
+			'pos' => 23,
+			'type' => 'AUX_GROUP',
+			'value' => '(0:8-94)',
+		},
+	],
+	'Tokenize string with space on the end of name (92 Fučík,J. "1942/1943"(0:8-94)).',
 );
 
 # Test.

@@ -25,7 +25,7 @@ sub tokenize {
 		}
 
 		if (@tokens && $tokens[-1]->{type} eq 'ALPHA_SPEC'
-			&& $input =~ /\G( +)(?=\()/gc) {
+			&& $input =~ /\G( +)(?=[("])/gc) {
 			next;
 		}
 
