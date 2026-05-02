@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Tokenizer qw(tokenize);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 22;
+use Test::More 'tests' => 23;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -229,6 +229,25 @@ is_deeply(
 		},
 	],
 	'Tokenize string with + in name (004.438C++).',
+);
+
+# Test.
+$ret_ar = tokenize('004.451.9CP/M');
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '004.451.9',
+		},
+		{
+			'pos' => 9,
+			'type' => 'ALPHA_SPEC',
+			'value' => 'CP/M',
+		},
+	],
+	'Tokenize string with / in name (004.451.9CP/M).',
 );
 
 # Test.
