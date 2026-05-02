@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Tokenizer qw(tokenize);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 16;
+use Test::More 'tests' => 17;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -229,6 +229,25 @@ is_deeply(
 		},
 	],
 	'Tokenize string with # in name (004.438C#).',
+);
+
+# Test.
+$ret_ar = tokenize(decode_utf8('929Komenský,J.A.'));
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '929',
+		},
+		{
+			'pos' => 3,
+			'type' => 'ALPHA_SPEC',
+			'value' => decode_utf8('Komenský,J.A.'),
+		},
+	],
+	'Tokenize string with , in name (929Komenský,J.A.).',
 );
 
 # Test.

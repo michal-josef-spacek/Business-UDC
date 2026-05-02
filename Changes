@@ -4,6 +4,7 @@
  - Add test for tokenization with + operator.
  - Allow # in name.
  - Allow + in name.
+ - Allow , in name.
  - Allow name with space on the begin.
  - Fix form after the name.
  - Fix space in name.
