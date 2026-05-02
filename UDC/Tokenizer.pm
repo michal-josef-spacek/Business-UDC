@@ -24,6 +24,10 @@ sub tokenize {
 			next;
 		}
 
+		if (@tokens && $input =~ /\G( +)\z/gc) {
+			next;
+		}
+
 		if ($input =~ /\G(\s)/gc) {
 			err "Whitespace is not allowed in UDC string.",
 				'position' => $start,

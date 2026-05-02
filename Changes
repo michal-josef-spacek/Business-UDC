@@ -1,4 +1,5 @@
 0.06
+ - Allow space on the end of name.
 
 0.05 2026-05-02T13:12:12+02:00
  - Add test for tokenization of group.
