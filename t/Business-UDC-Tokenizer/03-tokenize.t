@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Tokenizer qw(tokenize);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 18;
+use Test::More 'tests' => 19;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -267,6 +267,30 @@ is_deeply(
 		},
 	],
 	'Tokenize string with , in name (929Komenský,J.A.).',
+);
+
+# Test.
+$ret_ar = tokenize('1 DM (075.8)');
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => 1,
+		},
+		{
+			'pos' => 2,
+			'type' => 'ALPHA_SPEC',
+			'value' => 'DM',
+		},
+		{
+			'pos' => 5,
+			'type' => 'AUX_GROUP',
+			'value' => '(075.8)',
+		},
+	],
+	'Tokenize string with space on the end of name (1 DM (075.8)).',
 );
 
 # Test.
