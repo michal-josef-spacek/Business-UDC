@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Tokenizer qw(tokenize);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 13;
+use Test::More 'tests' => 14;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -76,6 +76,30 @@ is_deeply(
 		},
 	],
 	'Tokenize decimal number with four dots (78.089.6.087.6).',
+);
+
+# Test.
+$ret_ar = tokenize('330.5+338');
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '330.5',
+		},
+		{
+			'pos' => 5,
+			'type' => 'OP',
+			'value' => '+',
+		},
+		{
+			'pos' => 6,
+			'type' => 'NUMBER',
+			'value' => '338',
+		},
+	],
+	'Tokenize decimal numbers with + operator (330.5+338).',
 );
 
 # Test.
