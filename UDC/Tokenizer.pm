@@ -76,7 +76,7 @@ sub tokenize {
 			next;
 		}
 
-		if ($input =~ /\G(\p{L}(?:[\p{L}\p{N}._+]|-(?!\d))*(?: +[\p{L}\p{N}._](?:[\p{L}\p{N}._+]|-(?!\d))*)*)/gcu) {
+		if ($input =~ /\G(\p{L}(?:[\p{L}\p{N}._+#]|-(?!\d))*(?: +[\p{L}\p{N}._](?:[\p{L}\p{N}._+#]|-(?!\d))*)*)/gcu) {
 			_push_token(\@tokens, 'ALPHA_SPEC', $1, $start, 1);
 			next;
 		}
