@@ -1,4 +1,5 @@
 0.05
+ - Add test for tokenization of name only.
  - Fix form after the name.
  - Fix space in name.
 

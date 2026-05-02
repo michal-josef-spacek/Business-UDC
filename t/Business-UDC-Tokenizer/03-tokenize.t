@@ -4,8 +4,9 @@ use warnings;
 use Business::UDC::Tokenizer qw(tokenize);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 10;
+use Test::More 'tests' => 11;
 use Test::NoWarnings;
+use Unicode::UTF8 qw(decode_utf8);
 
 # Test.
 my $ret_ar = tokenize('123');
@@ -133,6 +134,20 @@ is_deeply(
 		},
 	],
 	'Tokenize string with valid name (591.5-755.43Abramis brama=20).',
+);
+
+# Test.
+$ret_ar = tokenize(decode_utf8('populárně-naučné publikace'));
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'ALPHA_SPEC',
+			'value' => decode_utf8('populárně-naučné publikace'),
+		},
+	],
+	'Tokenize bad UDC string, which is ALPHA_SPEC only (populárně-naučné publikace).',
 );
 
 # Test.
