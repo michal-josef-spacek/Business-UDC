@@ -15,6 +15,9 @@ our $VERSION = 0.07;
 sub tokenize {
 	my ($input) = @_;
 	my @tokens;
+	my $left_double_quote = decode_utf8('“');
+	my $right_double_quote = decode_utf8('”');
+	my $time_quote = qr/"|''|$left_double_quote|$right_double_quote/;
 
 	pos($input) = 0;
 
@@ -25,7 +28,13 @@ sub tokenize {
 			next;
 		}
 
-		if (@tokens && $input =~ /\G( +)(?=")/gc) {
+		if (@tokens
+			&& $input =~ /\G( +)(?=($time_quote)(?:(?!$time_quote)[\s\S])*\p{L})/gcu) {
+			next;
+		}
+
+		if (@tokens && $tokens[-1]->{type} eq 'ALPHA_SPEC'
+			&& $input =~ /\G( +)(?=$time_quote)/gc) {
 			next;
 		}
 
@@ -85,9 +94,6 @@ sub tokenize {
 			next;
 		}
 
-		my $left_double_quote = decode_utf8('“');
-		my $right_double_quote = decode_utf8('”');
-		my $time_quote = qr/"|''|$left_double_quote|$right_double_quote/;
 		if ($input =~ /\G(($time_quote)(?:(?!$time_quote)[\s\S])*$time_quote)/gc) {
 			my $value = $1;
 			if ($value =~ /\p{L}/u) {
