@@ -71,7 +71,7 @@ sub tokenize {
 		}
 
 		if ($input =~ /\G(\([^)]+\))/gc) {
-			_push_token(\@tokens, 'AUX_GROUP', $1, $start);
+			_push_token(\@tokens, 'AUX_GROUP', $1, $start, 1);
 			next;
 		}
 

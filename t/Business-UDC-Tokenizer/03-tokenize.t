@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Tokenizer qw(tokenize);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 20;
+use Test::More 'tests' => 21;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -320,6 +320,30 @@ is_deeply(
 		},
 	],
 	'Tokenize string with space on the end of name (1 DM (075.8)).',
+);
+
+# Test.
+$ret_ar = tokenize('728.82(437.1 Kozel)(083.85)');
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '728.82',
+		},
+		{
+			'pos' => 6,
+			'type' => 'AUX_GROUP',
+			'value' => '(437.1 Kozel)',
+		},
+		{
+			'pos' => 19,
+			'type' => 'AUX_GROUP',
+			'value' => '(083.85)',
+		},
+	],
+	'Tokenize string with name in group (728.82(437.1 Kozel)(083.85)).',
 );
 
 # Test.
