@@ -172,7 +172,10 @@ sub _parse_primary {
 	}
 
 	if ($tok->{'type'} eq 'ALPHA_SPEC') {
-		err "Alphabetical specification '$tok->{'value'}' cannot appear standalone.";
+		err "Alphabetical specification cannot appear standalone.",
+			'position' => $tok->{'pos'},
+			'value' => $tok->{'value'},
+		;
 	}
 
 	if ($tok->{'type'} eq 'APOS_AUX') {

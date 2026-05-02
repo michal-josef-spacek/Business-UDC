@@ -1,6 +1,7 @@
 0.06
  - Allow name in group.
  - Allow space on the end of name.
+ - Change error for alphabetical token on the begin.
 
 0.05 2026-05-02T13:12:12+02:00
  - Add test for tokenization of group.

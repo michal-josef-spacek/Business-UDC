@@ -11,8 +11,8 @@ is($obj->error, undef, 'Get error (no error).');
 
 # Test.
 $obj = Business::UDC->new('bad');
-is($obj->error, "Alphabetical specification 'bad' cannot appear standalone.",
-	'Get error (Alphabetical specification \'bad\' cannot appear standalone.).');
+is($obj->error, "Alphabetical specification cannot appear standalone.",
+	'Get error (Alphabetical specification cannot appear standalone.).');
 # TODO Check error parameters
 
 # Test.
