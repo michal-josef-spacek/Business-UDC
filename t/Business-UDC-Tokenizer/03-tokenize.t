@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Tokenizer qw(tokenize);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 8;
+use Test::More 'tests' => 9;
 use Test::NoWarnings;
 
 # Test.
@@ -75,6 +75,35 @@ is_deeply(
 		},
 	],
 	'Tokenize decimal number with four dots (78.089.6.087.6).',
+);
+
+# Test.
+$ret_ar = tokenize('591.5-755.43Abramis brama=20');
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '591.5',
+		},
+		{
+			'pos' => 5,
+			'type' => 'FORM',
+			'value' => '-755.43',
+		},
+		{
+			'pos' => 12,
+			'type' => 'ALPHA_SPEC',
+			'value' => 'Abramis brama',
+		},
+		{
+			'pos' => 25,
+			'type' => 'AUX_LANG',
+			'value' => '=20',
+		},
+	],
+	'Tokenize string with valid name (591.5-755.43Abramis brama=20).',
 );
 
 # Test.

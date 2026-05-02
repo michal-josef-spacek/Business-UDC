@@ -72,8 +72,8 @@ sub tokenize {
 			next;
 		}
 
-		if ($input =~ /\G(\p{L}[\p{L}\p{N}._-]*)/gcu) {
-			_push_token(\@tokens, 'ALPHA_SPEC', $1, $start);
+		if ($input =~ /\G(\p{L}[\p{L}\p{N}._-]*(?: +[\p{L}\p{N}._-]+)*)/gcu) {
+			_push_token(\@tokens, 'ALPHA_SPEC', $1, $start, 1);
 			next;
 		}
 
@@ -107,9 +107,11 @@ sub _check_whitespace {
 }
 
 sub _push_token {
-	my ($tokens_ar, $type, $value, $start) = @_;
+	my ($tokens_ar, $type, $value, $start, $allow_whitespace) = @_;
 
-	_check_whitespace($value, $start);
+	if (! $allow_whitespace) {
+		_check_whitespace($value, $start);
+	}
 
 	push @{$tokens_ar}, {
 		type => $type,
