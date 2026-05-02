@@ -2,6 +2,7 @@
  - Add tests for apostrophe.
  - Allow '/' in name.
  - Allow alternative apostrophe in tokenizer (&apos; and ’).
+ - Allow alternative quotation marks in tokenizer (“ and '').
 
 0.06 2026-05-02T16:50:33+02:00
  - Add processing of error params in error().

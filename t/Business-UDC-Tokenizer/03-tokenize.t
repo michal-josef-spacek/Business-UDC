@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Tokenizer qw(tokenize);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 27;
+use Test::More 'tests' => 30;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -473,6 +473,73 @@ is_deeply(
 		},
 	],
 	"Tokenize string with bad apostrophe (81&apos;24).",
+);
+
+# Test.
+$ret_ar = tokenize(decode_utf8("355.483(966.2)“1944”"));
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '355.483',
+		},
+		{
+			'pos' => 7,
+			'type' => 'AUX_GROUP',
+			'value' => '(966.2)',
+		},
+		{
+			'pos' => 14,
+			'type' => 'AUX_TIME',
+			'value' => decode_utf8("“1944”"),
+		},
+	],
+	"Tokenize string with bad quotation marks (“355.483(966.2)1944”).",
+);
+
+# Test.
+$ret_ar = tokenize("94(437.13 Jičín)''1939/1945''");
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '94',
+		},
+		{
+			'pos' => 2,
+			'type' => 'AUX_GROUP',
+			'value' => '(437.13 Jičín)',
+		},
+		{
+			'pos' => 18,
+			'type' => 'AUX_TIME',
+			'value' => "''1939/1945''",
+		},
+	],
+	"Tokenize string with bad quotation marks (94(437.13 Jičín)''1939/1945'').",
+);
+
+# Test.
+$ret_ar = tokenize(qq("17''(075.8)));
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'AUX_TIME',
+			'value' => qq("17''),
+		},
+		{
+			'pos' => 5,
+			'type' => 'AUX_GROUP',
+			'value' => '(075.8)',
+		},
+	],
+	qq(Tokenize string with bad quotation marks ("17''(075.8)).),
 );
 
 # Test.

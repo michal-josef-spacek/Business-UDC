@@ -85,7 +85,10 @@ sub tokenize {
 			next;
 		}
 
-		if ($input =~ /\G("[^"]*")/gc) {
+		my $left_double_quote = decode_utf8('“');
+		my $right_double_quote = decode_utf8('”');
+		my $time_quote = qr/"|''|$left_double_quote|$right_double_quote/;
+		if ($input =~ /\G(($time_quote)(?:(?!$time_quote)[\s\S])*$time_quote)/gc) {
 			my $value = $1;
 			if ($value =~ /\p{L}/u) {
 				_push_token(\@tokens, 'ALPHA_SPEC', $value, $start, 1);
