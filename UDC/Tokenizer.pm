@@ -6,6 +6,7 @@ use warnings;
 
 use Error::Pure qw(err);
 use Readonly;
+use Unicode::UTF8 qw(decode_utf8);
 
 Readonly::Array our @EXPORT_OK => qw(tokenize);
 
@@ -104,7 +105,8 @@ sub tokenize {
 			next;
 		}
 
-		if ($input =~ /\G(\'\d+(?:\.\d+)*)/gc) {
+		my $a = decode_utf8('’');
+		if ($input =~ /\G((?:'|&apos;|$a)\d+(?:\.\d+)*)/gc) {
 			_push_token(\@tokens, 'APOS_AUX', $1, $start);
 			next;
 		}
