@@ -27,6 +27,7 @@ sub parse {
 
 	my $tokens = tokenize($input);
 	_check_apos_aux_tokens($tokens);
+	_check_aux_time_tokens($tokens);
 	my $state = {
 		'tokens' => $tokens,
 		'pos' => 0,
@@ -66,6 +67,54 @@ sub _check_apos_aux_tokens {
 	}
 
 	return;
+}
+
+sub _check_aux_time_tokens {
+	my $tokens = shift;
+
+	foreach my $tok (@{$tokens}) {
+		if ($tok->{'type'} ne 'AUX_TIME') {
+			next;
+		}
+
+		my ($left, $left_length) = _time_quote_at_start($tok->{'value'});
+		if ($left ne '"') {
+			err 'Bad quotation mark character.',
+				'character' => $left,
+				'position' => $tok->{'pos'},
+			;
+		}
+
+		my ($right, $right_length) = _time_quote_at_end($tok->{'value'});
+		if ($right ne '"') {
+			err 'Bad quotation mark character.',
+				'character' => $right,
+				'position' => $tok->{'pos'} + length($tok->{'value'}) - $right_length,
+			;
+		}
+	}
+
+	return;
+}
+
+sub _time_quote_at_start {
+	my $value = shift;
+
+	if (substr($value, 0, 2) eq "''") {
+		return ("''", 2);
+	}
+
+	return (substr($value, 0, 1), 1);
+}
+
+sub _time_quote_at_end {
+	my $value = shift;
+
+	if (substr($value, -2) eq "''") {
+		return ("''", 2);
+	}
+
+	return (substr($value, -1), 1);
 }
 
 sub _consume {

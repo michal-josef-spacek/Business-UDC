@@ -1,6 +1,7 @@
 0.07
  - Add tests for apostrophe.
  - Add validation error for bad apostrophe character.
+ - Add validation error for bad quotation mark character.
  - Allow '/' in name.
  - Allow alternative apostrophe in tokenizer (&apos; and ’ and `).
  - Allow alternative quotation marks in tokenizer (“ and '').

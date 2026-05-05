@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Business::UDC;
-use Test::More 'tests' => 15;
+use Test::More 'tests' => 24;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -45,3 +45,24 @@ $obj = Business::UDC->new(decode_utf8("811’373"));
 is($error, 'Bad apostrophe character.', 'Bad apostrophe character (right single quote).');
 is($params{'character'}, decode_utf8('’'), 'Bad apostrophe character parameter (right single quote).');
 is($params{'position'}, 3, 'Bad apostrophe position parameter (right single quote).');
+
+# Test.
+$obj = Business::UDC->new(decode_utf8("355.483(966.2)“1944”"));
+($error, %params) = $obj->error;
+is($error, 'Bad quotation mark character.', 'Bad quotation mark character (left double quote).');
+is($params{'character'}, decode_utf8('“'), 'Bad quotation mark character parameter (left double quote).');
+is($params{'position'}, 14, 'Bad quotation mark position parameter (left double quote).');
+
+# Test.
+$obj = Business::UDC->new("94(437.13 Jicin)''1939/1945''");
+($error, %params) = $obj->error;
+is($error, 'Bad quotation mark character.', "Bad quotation mark character ('').");
+is($params{'character'}, "''", "Bad quotation mark character parameter ('').");
+is($params{'position'}, 16, "Bad quotation mark position parameter ('').");
+
+# Test.
+$obj = Business::UDC->new(qq("17''(075.8)));
+($error, %params) = $obj->error;
+is($error, 'Bad quotation mark character.', 'Bad quotation mark character (closing quote).');
+is($params{'character'}, "''", 'Bad quotation mark character parameter (closing quote).');
+is($params{'position'}, 3, 'Bad quotation mark position parameter (closing quote).');
