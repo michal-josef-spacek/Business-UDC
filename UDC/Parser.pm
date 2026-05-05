@@ -26,8 +26,10 @@ sub parse {
 	}
 
 	my $tokens = tokenize($input);
-	_check_apos_aux_tokens($tokens);
-	_check_aux_time_tokens($tokens);
+	foreach my $tok (@{$tokens}) {
+		_check_apos_aux_tokens($tok);
+		_check_aux_time_tokens($tok);
+	}
 	my $state = {
 		'tokens' => $tokens,
 		'pos' => 0,
@@ -49,49 +51,45 @@ sub parse {
 }
 
 sub _check_apos_aux_tokens {
-	my $tokens = shift;
+	my $tok = shift;
 
-	foreach my $tok (@{$tokens}) {
-		if ($tok->{'type'} ne 'APOS_AUX') {
-			next;
-		}
-		if (substr($tok->{'value'}, 0, 1) eq "'") {
-			next;
-		}
-
-		my ($character) = $tok->{'value'} =~ /^(&apos;|.)/us;
-		err 'Bad apostrophe character.',
-			'character' => $character,
-			'position' => $tok->{'pos'},
-		;
+	if ($tok->{'type'} ne 'APOS_AUX') {
+		return;
 	}
+	if (substr($tok->{'value'}, 0, 1) eq "'") {
+		return;
+	}
+
+	my ($character) = $tok->{'value'} =~ /^(&apos;|.)/us;
+	err 'Bad apostrophe character.',
+		'character' => $character,
+		'position' => $tok->{'pos'},
+	;
 
 	return;
 }
 
 sub _check_aux_time_tokens {
-	my $tokens = shift;
+	my $tok = shift;
 
-	foreach my $tok (@{$tokens}) {
-		if ($tok->{'type'} ne 'AUX_TIME') {
-			next;
-		}
+	if ($tok->{'type'} ne 'AUX_TIME') {
+		return;
+	}
 
-		my ($left, $left_length) = _time_quote_at_start($tok->{'value'});
-		if ($left ne '"') {
-			err 'Bad quotation mark character.',
-				'character' => $left,
-				'position' => $tok->{'pos'},
-			;
-		}
+	my ($left, $left_length) = _time_quote_at_start($tok->{'value'});
+	if ($left ne '"') {
+		err 'Bad quotation mark character.',
+			'character' => $left,
+			'position' => $tok->{'pos'},
+		;
+	}
 
-		my ($right, $right_length) = _time_quote_at_end($tok->{'value'});
-		if ($right ne '"') {
-			err 'Bad quotation mark character.',
-				'character' => $right,
-				'position' => $tok->{'pos'} + length($tok->{'value'}) - $right_length,
-			;
-		}
+	my ($right, $right_length) = _time_quote_at_end($tok->{'value'});
+	if ($right ne '"') {
+		err 'Bad quotation mark character.',
+			'character' => $right,
+			'position' => $tok->{'pos'} + length($tok->{'value'}) - $right_length,
+		;
 	}
 
 	return;
