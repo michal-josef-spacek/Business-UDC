@@ -1,7 +1,7 @@
 0.07
  - Add tests for apostrophe.
  - Allow '/' in name.
- - Allow alternative apostrophe in tokenizer (&apos; and ’).
+ - Allow alternative apostrophe in tokenizer (&apos; and ’ and `).
  - Allow alternative quotation marks in tokenizer (“ and '').
  - Fix whitespace error in '94(437.13 Jičín) "1939/1945"'.
  - Improve test messages.
