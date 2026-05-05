@@ -26,6 +26,7 @@ sub parse {
 	}
 
 	my $tokens = tokenize($input);
+	_check_apos_aux_tokens($tokens);
 	my $state = {
 		'tokens' => $tokens,
 		'pos' => 0,
@@ -44,6 +45,27 @@ sub parse {
 		'tokens' => $tokens,
 		'ast' => $ast,
 	};
+}
+
+sub _check_apos_aux_tokens {
+	my $tokens = shift;
+
+	foreach my $tok (@{$tokens}) {
+		if ($tok->{'type'} ne 'APOS_AUX') {
+			next;
+		}
+		if (substr($tok->{'value'}, 0, 1) eq "'") {
+			next;
+		}
+
+		my ($character) = $tok->{'value'} =~ /^(&apos;|.)/us;
+		err 'Bad apostrophe character.',
+			'character' => $character,
+			'position' => $tok->{'pos'},
+		;
+	}
+
+	return;
 }
 
 sub _consume {
