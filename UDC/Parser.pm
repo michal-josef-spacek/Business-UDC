@@ -13,7 +13,7 @@ use Readonly;
 
 Readonly::Array our @EXPORT_OK => qw(parse);
 
-our $VERSION = 0.07;
+our $VERSION = 0.08;
 
 sub parse {
 	my $input = shift;
