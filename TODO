@@ -6,7 +6,9 @@ TODO
 8. Tokenization in AUX_GROUP?
 9. Valid "913((6-11)+(5-13)+(9-15))" ?
 12. Test issue (437,314) (AUX_GROUP), depends on 8)
-13.
+13. Fix '(438)06'
+14. Fix '81´37-021.6'
+15.
 
 Applied
 =======
