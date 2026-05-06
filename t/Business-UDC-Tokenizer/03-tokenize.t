@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Business::UDC::Tokenizer qw(tokenize);
-use Test::More 'tests' => 33;
+use Test::More 'tests' => 34;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -32,6 +32,20 @@ is_deeply(
 		},
 	],
 	'Tokenize decimal number with one dot (123.4).',
+);
+
+# Test.
+$ret_ar = tokenize('351,7');
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '351,7',
+		},
+	],
+	'Tokenize bad decimal number with comma (351,7).',
 );
 
 # Test.

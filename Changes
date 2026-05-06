@@ -1,6 +1,7 @@
 0.08
  - Add processing of WHITESPACE in Tokenizer. And move error with
    whitespace from Tokenizer to Parser.
+ - Allow ',' in NUMBER token as dot in Toknenizer.
  - Change Tokenizer to not ignore whitespace in ALPHA_SPEC.
 
 0.07 2026-05-05T19:26:11+02:00

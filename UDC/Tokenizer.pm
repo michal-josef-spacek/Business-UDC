@@ -39,7 +39,7 @@ sub tokenize {
 			next;
 		}
 
-		if ($input =~ /\G(\d+(?:\.\d+)*)/gc) {
+		if ($input =~ /\G(\d+(?:[\.,]\d+)*)/gc) {
 			_push_token(\@tokens, 'NUMBER', $1, $start);
 			next;
 		}
