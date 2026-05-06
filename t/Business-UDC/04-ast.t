@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Business::UDC;
-use Test::More 'tests' => 3;
+use Test::More 'tests' => 4;
 use Test::NoWarnings;
 
 # Test.
@@ -52,4 +52,33 @@ is_deeply(
 		'type' => 'TERM',
 	},
 	'Test ast structure with trimmed ALPHA_SPEC.',
+);
+
+# Test.
+$obj = Business::UDC->new('233-852.5Y-051');
+$ret = $obj->ast;
+is_deeply(
+	$ret,
+	{
+		'modifiers' => [
+			{
+				'type' => 'FORM',
+				'value' => '-852.5',
+			},
+			{
+				'type' => 'ALPHA_SPEC',
+				'value' => 'Y',
+			},
+			{
+				'type' => 'FORM',
+				'value' => '-051',
+			},
+		],
+		'primary' => {
+			'type' => 'NUMBER',
+			'value' => '233',
+		},
+		'type' => 'TERM',
+	},
+	'Test ast structure with FORM after ALPHA_SPEC.',
 );

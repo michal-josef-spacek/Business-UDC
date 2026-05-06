@@ -3,7 +3,7 @@ use warnings;
 
 use Business::UDC;
 use Readonly;
-use Test::More 'tests' => 56;
+use Test::More 'tests' => 57;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8 encode_utf8);
 
@@ -36,6 +36,7 @@ Readonly::Array our @RIGHT_UDCS => (
 	'784.3/.7-021.18',
 	"81'42'373.46",
 	'233-852.5U',
+	'233-852.5Y-051',
 	"81'27/'28",
 	"94(437)'1/'3",
 	'[007+004]:658',
