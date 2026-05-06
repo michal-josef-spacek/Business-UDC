@@ -3,7 +3,7 @@ use warnings;
 
 use Business::UDC;
 use Readonly;
-use Test::More 'tests' => 54;
+use Test::More 'tests' => 56;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8 encode_utf8);
 
@@ -42,6 +42,8 @@ Readonly::Array our @RIGHT_UDCS => (
 	'[782.9:792.82].086',
 	'341.222[(4-11):(4-15)]',
 	'016:[371.035.4:335.55]378(437)',
+	decode_utf8('784.96:061.2 “Bojan”'),
+	"784.96:061.2 ''Bojan''",
 );
 Readonly::Array our @BAD_UDCS => (
 	'bad',

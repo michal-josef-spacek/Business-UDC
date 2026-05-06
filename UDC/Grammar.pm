@@ -25,6 +25,7 @@ Readonly::Hash our %DESC => (
 	PARTIAL_FORM => 'partial form for range shorthand',
 	PARTIAL_NUMBER => 'partial number for range shorthand',
 	RBRACK => 'right subgroup bracket',
+	WHITESPACE => 'whitespace',
 );
 Readonly::Hash our %TOKEN_RULES => (
 	ALPHA_SPEC => {

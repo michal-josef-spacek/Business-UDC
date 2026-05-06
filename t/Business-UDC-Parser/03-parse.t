@@ -4,8 +4,9 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 4;
+use Test::More 'tests' => 8;
 use Test::NoWarnings;
+use Unicode::UTF8 qw(decode_utf8);
 
 # Test.
 my $ret_hr = parse('0/9');
@@ -63,4 +64,36 @@ eval {
 };
 is($EVAL_ERROR, "Empty input.\n",
 	"Empty input.");
+clean();
+
+# Test.
+eval {
+	parse('78.089 (123)');
+};
+is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
+	"Whitespace is not allowed in UDC string (78.089 (123)).");
+clean();
+
+# Test.
+eval {
+	parse('677.062 +65.01] :687.1(082)');
+};
+is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
+	"Whitespace is not allowed in UDC string (677.062 +65.01] :687.1(082)).");
+clean();
+
+# Test.
+eval {
+	parse(decode_utf8('94(437.13 Jičín) "1939/1945"'));
+};
+is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
+	'Whitespace is not allowed in UDC string (94(437.13 Jičín) "1939/1945").');
+clean();
+
+# Test.
+eval {
+	parse(decode_utf8("94(437.13 Jičín) ''1939/1945''"));
+};
+is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
+	"Whitespace is not allowed in UDC string (94(437.13 Jičín) ''1939/1945'').");
 clean();

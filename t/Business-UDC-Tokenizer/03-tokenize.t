@@ -2,8 +2,6 @@ use strict;
 use warnings;
 
 use Business::UDC::Tokenizer qw(tokenize);
-use English;
-use Error::Pure::Utils qw(clean);
 use Test::More 'tests' => 33;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
@@ -185,9 +183,9 @@ is_deeply(
 			'value' => '004.42',
 		},
 		{
-			'pos' => 7,
+			'pos' => 6,
 			'type' => 'ALPHA_SPEC',
-			'value' => 'Photo Studio',
+			'value' => ' Photo Studio',
 		},
 	],
 	'Tokenize string with valid name (004.42 Photo Studio).',
@@ -204,9 +202,9 @@ is_deeply(
 			'value' => '004.42',
 		},
 		{
-			'pos' => 7,
+			'pos' => 6,
 			'type' => 'ALPHA_SPEC',
-			'value' => 'Photo Studio',
+			'value' => ' Photo Studio ',
 		},
 	],
 	'Tokenize string with valid name (004.42 Photo Studio ).',
@@ -299,9 +297,9 @@ is_deeply(
 			'value' => 92,
 		},
 		{
-			'pos' => 3,
+			'pos' => 2,
 			'type' => 'ALPHA_SPEC',
-			'value' => decode_utf8('Fučík,J.'),
+			'value' => decode_utf8(' Fučík,J. '),
 		},
 		{
 			'pos' => 12,
@@ -328,9 +326,9 @@ is_deeply(
 			'value' => 1,
 		},
 		{
-			'pos' => 2,
+			'pos' => 1,
 			'type' => 'ALPHA_SPEC',
-			'value' => 'DM',
+			'value' => ' DM ',
 		},
 		{
 			'pos' => 5,
@@ -386,9 +384,9 @@ is_deeply(
 			'value' => '061.2',
 		},
 		{
-			'pos' => 13,
+			'pos' => 12,
 			'type' => 'ALPHA_SPEC',
-			'value' => '"Bojan"',
+			'value' => ' "Bojan"',
 		},
 	],
 	'Tokenize string with quotes in name (784.96:061.2 "Bojan").',
@@ -576,33 +574,137 @@ is_deeply(
 );
 
 # Test.
-eval {
-	tokenize('78.089 (123)');
-};
-is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
-	"Whitespace is not allowed in UDC string (78.089 (123)).");
-clean();
+$ret_ar = tokenize('78.089 (123)');
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '78.089',
+		},
+		{
+			'pos' => 6,
+			'type' => 'WHITESPACE',
+			'value' => ' ',
+		},
+		{
+			'pos' => 7,
+			'type' => 'AUX_GROUP',
+			'value' => '(123)',
+		},
+	],
+	"Tokenize string with whitespace (78.089 (123)).",
+);
 
 # Test.
-eval {
-	tokenize('677.062 +65.01] :687.1(082)');
-};
-is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
-	"Whitespace is not allowed in UDC string (677.062 +65.01] :687.1(082)).");
-clean();
+$ret_ar = tokenize('677.062 +65.01] :687.1(082)');
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '677.062',
+		},
+		{
+			'pos' => 7,
+			'type' => 'WHITESPACE',
+			'value' => ' ',
+		},
+		{
+			'pos' => 8,
+			'type' => 'OP',
+			'value' => '+',
+		},
+		{
+			'pos' => 9,
+			'type' => 'NUMBER',
+			'value' => '65.01',
+		},
+		{
+			'pos' => 14,
+			'type' => 'RBRACK',
+			'value' => ']',
+		},
+		{
+			'pos' => 15,
+			'type' => 'WHITESPACE',
+			'value' => ' ',
+		},
+		{
+			'pos' => 16,
+			'type' => 'OP',
+			'value' => ':',
+		},
+		{
+			'pos' => 17,
+			'type' => 'NUMBER',
+			'value' => '687.1',
+		},
+		{
+			'pos' => 22,
+			'type' => 'AUX_GROUP',
+			'value' => '(082)',
+		},
+	],
+	"Tokenize string with whitespace (677.062 +65.01] :687.1(082)).",
+);
 
 # Test.
-eval {
-	tokenize('94(437.13 Jičín) "1939/1945"');
-};
-is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
-	'Whitespace is not allowed in UDC string (94(437.13 Jičín) "1939/1945").');
-clean();
+$ret_ar = tokenize(decode_utf8('94(437.13 Jičín) "1939/1945"'));
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '94',
+		},
+		{
+			'pos' => 2,
+			'type' => 'AUX_GROUP',
+			'value' => decode_utf8('(437.13 Jičín)'),
+		},
+		{
+			'pos' => 16,
+			'type' => 'WHITESPACE',
+			'value' => ' ',
+		},
+		{
+			'pos' => 17,
+			'type' => 'AUX_TIME',
+			'value' => '"1939/1945"',
+		},
+	],
+	'Tokenize string with whitespace (94(437.13 Jičín) "1939/1945").',
+);
 
 # Test.
-eval {
-	tokenize("94(437.13 Jičín) ''1939/1945''");
-};
-is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
-	"Whitespace is not allowed in UDC string (94(437.13 Jičín) ''1939/1945'').");
-clean();
+$ret_ar = tokenize(decode_utf8("94(437.13 Jičín) ''1939/1945''"));
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '94',
+		},
+		{
+			'pos' => 2,
+			'type' => 'AUX_GROUP',
+			'value' => decode_utf8('(437.13 Jičín)'),
+		},
+		{
+			'pos' => 16,
+			'type' => 'WHITESPACE',
+			'value' => ' ',
+		},
+		{
+			'pos' => 17,
+			'type' => 'AUX_TIME',
+			'value' => "''1939/1945''",
+		},
+	],
+	"Tokenize string with whitespace (94(437.13 Jičín) ''1939/1945'').",
+);

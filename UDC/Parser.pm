@@ -26,12 +26,17 @@ sub parse {
 	}
 
 	my $tokens = tokenize($input);
-	foreach my $tok (@{$tokens}) {
-		_check_apos_aux_tokens($tok);
-		_check_aux_time_tokens($tok);
+	my $normalized_tokens = [];
+	foreach my $tok_hr (@{$tokens}) {
+		my %parse_tok = %{$tok_hr};
+		_check_whitespace_token(\%parse_tok);
+		_check_apos_aux_tokens(\%parse_tok);
+		_check_aux_time_tokens(\%parse_tok);
+		_normalize_alpha_spec_token(\%parse_tok);
+		push @{$normalized_tokens}, \%parse_tok;
 	}
 	my $state = {
-		'tokens' => $tokens,
+		'tokens' => $normalized_tokens,
 		'pos' => 0,
 	};
 
@@ -48,6 +53,19 @@ sub parse {
 		'tokens' => $tokens,
 		'ast' => $ast,
 	};
+}
+
+sub _check_whitespace_token {
+	my $tok = shift;
+
+	if ($tok->{'type'} ne 'WHITESPACE') {
+		return;
+	}
+
+	err "Whitespace is not allowed in UDC string.",
+		'position' => $tok->{'pos'},
+		'character' => substr($tok->{'value'}, 0, 1),
+	;
 }
 
 sub _check_apos_aux_tokens {
@@ -426,6 +444,33 @@ sub _peek {
 	my $state = shift;
 
 	return $state->{'tokens'}[$state->{'pos'}];
+}
+
+sub _normalize_alpha_spec_token {
+	my $tok = shift;
+
+	if ($tok->{'type'} ne 'ALPHA_SPEC') {
+		return;
+	}
+
+	my ($value, $pos) = _trim_alpha_spec_value($tok);
+	$tok->{'pos'} = $pos;
+	$tok->{'value'} = $value;
+
+	return;
+}
+
+sub _trim_alpha_spec_value {
+	my $tok = shift;
+	my $value = $tok->{'value'};
+	my $pos = $tok->{'pos'};
+
+	if ($value =~ s/^(\s+)//) {
+		$pos += length($1);
+	}
+	$value =~ s/\s+\z//;
+
+	return ($value, $pos);
 }
 
 sub _split_trailing_apos_aux {
