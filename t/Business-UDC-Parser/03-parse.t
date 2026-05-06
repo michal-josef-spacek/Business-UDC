@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 8;
+use Test::More 'tests' => 9;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -64,6 +64,14 @@ eval {
 };
 is($EVAL_ERROR, "Empty input.\n",
 	"Empty input.");
+clean();
+
+# Test.
+eval {
+	parse('351,7');
+};
+is($EVAL_ERROR, "Bad dot character in number.\n",
+	"Bad dot character in number (351,7).");
 clean();
 
 # Test.

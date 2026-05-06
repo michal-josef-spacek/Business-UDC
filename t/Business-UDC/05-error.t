@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Business::UDC;
-use Test::More 'tests' => 24;
+use Test::More 'tests' => 27;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -66,3 +66,11 @@ $obj = Business::UDC->new(qq("17''(075.8)));
 is($error, 'Bad quotation mark character.', 'Bad quotation mark character (closing quote).');
 is($params{'character'}, "''", 'Bad quotation mark character parameter (closing quote).');
 is($params{'position'}, 3, 'Bad quotation mark position parameter (closing quote).');
+
+# Test.
+$obj = Business::UDC->new('351,7');
+($error, %params) = $obj->error;
+is($error, 'Bad dot character in number.',
+	'Bad dot character in number (comma).');
+is($params{'character'}, ',', "Bad dot character in number 'character' parametr (,).");
+is($params{'position'}, 3, "Bad dot character in number 'position' parameter (3).");

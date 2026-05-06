@@ -1,6 +1,7 @@
 0.08
  - Add processing of WHITESPACE in Tokenizer. And move error with
    whitespace from Tokenizer to Parser.
+ - Add validation error for comma in number.
  - Allow ',' in NUMBER token as dot in Toknenizer.
  - Change Tokenizer to not ignore whitespace in ALPHA_SPEC.
 

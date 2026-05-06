@@ -32,6 +32,7 @@ sub parse {
 		_check_whitespace_token(\%parse_tok);
 		_check_apos_aux_tokens(\%parse_tok);
 		_check_aux_time_tokens(\%parse_tok);
+		_check_number_token(\%parse_tok);
 		_normalize_alpha_spec_token(\%parse_tok);
 		push @{$normalized_tokens}, \%parse_tok;
 	}
@@ -111,6 +112,22 @@ sub _check_aux_time_tokens {
 	}
 
 	return;
+}
+
+sub _check_number_token {
+	my $tok = shift;
+
+	if ($tok->{'type'} ne 'NUMBER') {
+		return;
+	}
+	if ($tok->{'value'} !~ /,/) {
+		return;
+	}
+
+	err 'Bad dot character in number.',
+		'position' => $tok->{'pos'} + index($tok->{'value'}, ','),
+		'character' => ',',
+	;
 }
 
 sub _time_quote_at_start {
