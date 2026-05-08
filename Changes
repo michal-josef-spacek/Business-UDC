@@ -1,3 +1,5 @@
+0.09
+
 0.08 2026-05-08T09:46:06+02:00
  - Add processing of WHITESPACE in Tokenizer. And move error with
    whitespace from Tokenizer to Parser.
