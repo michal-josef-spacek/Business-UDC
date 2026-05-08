@@ -24,7 +24,9 @@ TODO
     kzp75120: '061.22::61'
     vkol000043987: '291::39'
     zp045974: '341.16::331'
-16.
+16. Improve Tokenizer terminology. There are differences between e.g. 050 and
+    50, same with dash prefix. And actual names are not fine.
+17.
 
 Applied
 =======
