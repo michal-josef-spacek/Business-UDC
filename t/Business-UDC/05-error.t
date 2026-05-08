@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Business::UDC;
-use Test::More 'tests' => 27;
+use Test::More 'tests' => 30;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -45,6 +45,13 @@ $obj = Business::UDC->new(decode_utf8("811’373"));
 is($error, 'Bad apostrophe character.', 'Bad apostrophe character (right single quote).');
 is($params{'character'}, decode_utf8('’'), 'Bad apostrophe character parameter (right single quote).');
 is($params{'position'}, 3, 'Bad apostrophe position parameter (right single quote).');
+
+# Test.
+$obj = Business::UDC->new(decode_utf8("81´37-021.6"));
+($error, %params) = $obj->error;
+is($error, 'Bad apostrophe character.', 'Bad apostrophe character (acute accent).');
+is($params{'character'}, decode_utf8('´'), 'Bad apostrophe character parameter (acute accent).');
+is($params{'position'}, 2, 'Bad apostrophe position parameter (acute accent).');
 
 # Test.
 $obj = Business::UDC->new(decode_utf8("355.483(966.2)“1944”"));
