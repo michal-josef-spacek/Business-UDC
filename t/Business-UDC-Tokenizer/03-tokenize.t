@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Business::UDC::Tokenizer qw(tokenize);
-use Test::More 'tests' => 34;
+use Test::More 'tests' => 35;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -461,6 +461,30 @@ is_deeply(
 		},
 	],
 	"Tokenize string with bad apostrophe (81’24).",
+);
+
+# Test.
+$ret_ar = tokenize(decode_utf8("81´37-021.6"));
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '81',
+		},
+		{
+			'pos' => 2,
+			'type' => 'APOS_AUX',
+			'value' => decode_utf8("´37"),
+		},
+		{
+			'pos' => 5,
+			'type' => 'FORM',
+			'value' => '-021.6',
+		},
+	],
+	"Tokenize string with bad acute apostrophe (81´37-021.6).",
 );
 
 # Test.
