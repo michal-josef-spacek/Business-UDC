@@ -1,4 +1,5 @@
 0.09
+ - Add support for [] in ALPHA_SPEC.
 
 0.08 2026-05-08T09:46:06+02:00
  - Add processing of WHITESPACE in Tokenizer. And move error with

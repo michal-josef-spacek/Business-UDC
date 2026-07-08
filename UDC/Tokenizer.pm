@@ -24,7 +24,7 @@ sub tokenize {
 	while (pos($input) < length($input)) {
 		my $start = pos($input);
 
-		if ($input =~ /\G( +(?=\p{L})\p{L}(?:[\p{L}\p{N}._#,]|\+(?! )|\/(?! )|-(?!\d)| +(?=[\p{L}\p{N}._]))* *)/gcu) {
+		if ($input =~ /\G( +(?=\p{L})\p{L}(?:[\p{L}\p{N}._#,]|\[[^\]]+\]|\+(?! )|\/(?! )|-(?!\d)| +(?=[\p{L}\p{N}._\[]))* *)/gcu) {
 			_push_token(\@tokens, 'ALPHA_SPEC', $1, $start, 1);
 			next;
 		}
@@ -89,7 +89,7 @@ sub tokenize {
 			next;
 		}
 
-		if ($input =~ /\G(\p{L}(?:[\p{L}\p{N}._#,]|\+(?! )|\/(?! )|-(?!\d)| +(?=[\p{L}\p{N}._]))* *)/gcu) {
+		if ($input =~ /\G(\p{L}(?:[\p{L}\p{N}._#,]|\[[^\]]+\]|\+(?! )|\/(?! )|-(?!\d)| +(?=[\p{L}\p{N}._\[]))* *)/gcu) {
 			_push_token(\@tokens, 'ALPHA_SPEC', $1, $start, 1);
 			next;
 		}
@@ -107,7 +107,7 @@ sub tokenize {
 		;
 	}
 
-	return \@tokens;
+	return _merge_bracketed_alpha_specs(\@tokens);
 }
 
 sub _check_whitespace {
@@ -139,6 +139,32 @@ sub _push_token {
 	};
 
 	return;
+}
+
+sub _merge_bracketed_alpha_specs {
+	my $tokens_ar = shift;
+
+	my @merged;
+	while (@{$tokens_ar}) {
+		my $token = shift @{$tokens_ar};
+
+		if (@merged
+			&& $merged[-1]->{'type'} eq 'ALPHA_SPEC'
+			&& $token->{'type'} eq 'LBRACK'
+			&& @{$tokens_ar} >= 2
+			&& $tokens_ar->[0]->{'type'} eq 'ALPHA_SPEC'
+			&& $tokens_ar->[1]->{'type'} eq 'RBRACK') {
+
+			my $inner = shift @{$tokens_ar};
+			shift @{$tokens_ar};
+			$merged[-1]->{'value'} .= '['.$inner->{'value'}.']';
+			next;
+		}
+
+		push @merged, $token;
+	}
+
+	return \@merged;
 }
 
 

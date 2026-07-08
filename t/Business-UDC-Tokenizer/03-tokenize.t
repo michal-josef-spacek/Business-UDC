@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Business::UDC::Tokenizer qw(tokenize);
-use Test::More 'tests' => 35;
+use Test::More 'tests' => 36;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -609,6 +609,65 @@ is_deeply(
 		},
 	],
 	'Tokenize bad UDC string, which is ALPHA_SPEC only (populárně-naučné publikace).',
+);
+
+# Test.
+$ret_ar = tokenize(decode_utf8('323.22/.28(437):92 Thälmann, [E.]:321.64(049)'));
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '323.22',
+		},
+		{
+			'pos' => 6,
+			'type' => 'OP',
+			'value' => '/',
+		},
+		{
+			'pos' => 7,
+			'type' => 'AUX_DOT',
+			'value' => '.28',
+		},
+		{
+			'pos' => 10,
+			'type' => 'AUX_GROUP',
+			'value' => '(437)',
+		},
+		{
+			'pos' => 15,
+			'type' => 'OP',
+			'value' => ':',
+		},
+		{
+			'pos' => 16,
+			'type' => 'NUMBER',
+			'value' => '92',
+		},
+		{
+			'pos' => 18,
+			'type' => 'ALPHA_SPEC',
+			'value' => decode_utf8(' Thälmann, [E.]'),
+		},
+		{
+			'pos' => 33,
+			'type' => 'OP',
+			'value' => ':',
+		},
+		{
+			'pos' => 34,
+			'type' => 'NUMBER',
+			'value' => '321.64',
+		},
+		{
+			'pos' => 40,
+			'type' => 'AUX_GROUP',
+			'value' => '(049)',
+		},
+	],
+	'Tokenize string with bracketed initials in name (323.22/.28(437):92 Thälmann, [E.]:321.64(049)).',
 );
 
 # Test.
