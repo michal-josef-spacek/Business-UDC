@@ -89,6 +89,11 @@ sub tokenize {
 			next;
 		}
 
+		if ($input =~ /\G(=+)(?=\s)/gc) {
+			_push_token(\@tokens, 'AUX_LANG', $1, $start, 1);
+			next;
+		}
+
 		if ($input =~ /\G(=+(?:[A-Za-z]+|\d+(?:\.\d+)*))/gc) {
 			_push_token(\@tokens, 'AUX_LANG', $1, $start);
 			next;

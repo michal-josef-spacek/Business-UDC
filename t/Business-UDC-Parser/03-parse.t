@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 15;
+use Test::More 'tests' => 16;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -113,6 +113,14 @@ eval {
 };
 is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
 	'Whitespace is not allowed in UDC string (784.71- 044.357).');
+clean();
+
+# Test.
+eval {
+	parse('885-93-343.4 = 393');
+};
+is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
+	'Whitespace is not allowed in UDC string (885-93-343.4 = 393).');
 clean();
 
 # Test.
