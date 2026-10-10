@@ -1,6 +1,7 @@
 0.09
  - Add another case for whitespace issue ( = ).
  - Add another case for whitespace issue (- 044).
+ - Add check for extra closing parenthesis.
  - Add check for opening/closing parenthesis.
  - Add support for [] in ALPHA_SPEC.
  - Split errors with whitespace to two types (for ALPHA_SPEC).

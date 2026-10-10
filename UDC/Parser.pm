@@ -61,21 +61,27 @@ sub parse {
 sub _check_parentheses {
 	my $tokens = shift;
 	my $left;
+	my $previous;
 
 	foreach my $tok (@{$tokens}) {
 		if ($tok->{'type'} eq 'LPAREN') {
 			$left = $tok;
+			$previous = $tok;
 			next;
 		}
 		if ($tok->{'type'} eq 'RPAREN') {
 			if (! $left) {
-				err "Missing opening parenthesis '('.",
+				my $message = $previous && $previous->{'type'} eq 'AUX_GROUP'
+					? "Extra closing parenthesis ')'."
+					: "Missing opening parenthesis '('.";
+				err $message,
 					'position' => $tok->{'pos'},
 					'character' => ')',
 				;
 			}
 			$left = undef;
 		}
+		$previous = $tok;
 	}
 
 	if ($left) {

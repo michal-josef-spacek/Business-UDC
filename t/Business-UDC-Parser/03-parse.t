@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 19;
+use Test::More 'tests' => 20;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -163,6 +163,14 @@ eval {
 };
 is($EVAL_ERROR, "Missing closing parenthesis ')'.\n",
 	"Missing closing parenthesis ')' ((035).");
+clean();
+
+# Test.
+eval {
+	parse('(437.3))');
+};
+is($EVAL_ERROR, "Extra closing parenthesis ')'.\n",
+	"Extra closing parenthesis ')' ((437.3))).");
 clean();
 
 # Test.
