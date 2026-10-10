@@ -79,6 +79,16 @@ sub tokenize {
 			next;
 		}
 
+		if ($input =~ /\G(\()/gc) {
+			_push_token(\@tokens, 'LPAREN', $1, $start, 1);
+			next;
+		}
+
+		if ($input =~ /\G(\))/gc) {
+			_push_token(\@tokens, 'RPAREN', $1, $start, 1);
+			next;
+		}
+
 		if ($input =~ /\G(($time_quote)(?:(?!$time_quote)[\s\S])*$time_quote)/gc) {
 			my $value = $1;
 			if ($value =~ /\p{L}/u) {

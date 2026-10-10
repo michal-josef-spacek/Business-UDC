@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 16;
+use Test::More 'tests' => 19;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -139,6 +139,30 @@ eval {
 is($EVAL_ERROR,
 	"Whitespace is not allowed in UDC string with alphabetical specification.\n",
 	'Whitespace with alphabetical specification (830 (430.2)-311.6-321.2+92 Bobrowski, J.).');
+clean();
+
+# Test.
+eval {
+	parse('048.8)');
+};
+is($EVAL_ERROR, "Missing opening parenthesis '('.\n",
+	"Missing opening parenthesis '(' (048.8)).");
+clean();
+
+# Test.
+eval {
+	parse('086.7)08');
+};
+is($EVAL_ERROR, "Missing opening parenthesis '('.\n",
+	"Missing opening parenthesis '(' (086.7)08).");
+clean();
+
+# Test.
+eval {
+	parse('(035');
+};
+is($EVAL_ERROR, "Missing closing parenthesis ')'.\n",
+	"Missing closing parenthesis ')' ((035).");
 clean();
 
 # Test.

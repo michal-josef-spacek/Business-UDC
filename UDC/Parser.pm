@@ -26,6 +26,7 @@ sub parse {
 	}
 
 	my $tokens = tokenize($input);
+	_check_parentheses($tokens);
 	my $has_alpha_spec = any { $_->{'type'} eq 'ALPHA_SPEC' } @{$tokens};
 	my $normalized_tokens = [];
 	foreach my $tok_hr (@{$tokens}) {
@@ -55,6 +56,36 @@ sub parse {
 		'tokens' => $tokens,
 		'ast' => $ast,
 	};
+}
+
+sub _check_parentheses {
+	my $tokens = shift;
+	my $left;
+
+	foreach my $tok (@{$tokens}) {
+		if ($tok->{'type'} eq 'LPAREN') {
+			$left = $tok;
+			next;
+		}
+		if ($tok->{'type'} eq 'RPAREN') {
+			if (! $left) {
+				err "Missing opening parenthesis '('.",
+					'position' => $tok->{'pos'},
+					'character' => ')',
+				;
+			}
+			$left = undef;
+		}
+	}
+
+	if ($left) {
+		err "Missing closing parenthesis ')'.",
+			'position' => $left->{'pos'},
+			'character' => '(',
+		;
+	}
+
+	return;
 }
 
 sub _check_whitespace_token {
