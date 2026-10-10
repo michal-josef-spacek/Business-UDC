@@ -59,7 +59,7 @@ sub tokenize {
 			next;
 		}
 
-		if ($input =~ /\G([:+\/])/gc) {
+		if ($input =~ /\G(::|[+:\/])/gc) {
 			_push_token(\@tokens, 'OP', $1, $start);
 			next;
 		}

@@ -4,6 +4,7 @@
  - Add check for extra closing parenthesis.
  - Add check for opening/closing parenthesis.
  - Add support for [] in ALPHA_SPEC.
+ - Add support for '::' operator.
  - Split errors with whitespace to two types (for ALPHA_SPEC).
  - Update author email.
 

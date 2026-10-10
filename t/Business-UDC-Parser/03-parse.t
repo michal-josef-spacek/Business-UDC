@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 20;
+use Test::More 'tests' => 22;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -49,6 +49,13 @@ is_deeply(
 	},
 	'Parse UDC (0/9).',
 );
+
+# Test.
+$ret_hr = parse('061.22::61');
+is($ret_hr->{'ast'}{'operator'}, '::',
+	'Parse fixed relation operator.');
+is($ret_hr->{'tokens'}[1]{'value'}, '::',
+	'Tokenize fixed relation operator.');
 
 # Test.
 eval {
