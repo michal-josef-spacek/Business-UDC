@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 9;
+use Test::More 'tests' => 14;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -80,6 +80,49 @@ eval {
 };
 is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
 	"Whitespace is not allowed in UDC string (78.089 (123)).");
+clean();
+
+# Test.
+eval {
+	parse(decode_utf8('908.437.138 Babiččino údolí: 502.6/.7(036)'));
+};
+is($EVAL_ERROR,
+	"Whitespace is not allowed in UDC string with alphabetical specification.\n",
+	'Whitespace with alphabetical specification (908.437.138 Babiččino údolí: 502.6/.7(036)).');
+clean();
+
+# Test.
+eval {
+	parse('54 (075.2)');
+};
+is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
+	'Whitespace is not allowed in UDC string (54 (075.2)).');
+clean();
+
+# Test.
+eval {
+	parse('141.82 :323.381.2:323.4(100)');
+};
+is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
+	'Whitespace is not allowed in UDC string (141.82 :323.381.2:323.4(100)).');
+clean();
+
+# Test.
+eval {
+	parse('840-94 :910.45 :92 Bombard, A.');
+};
+is($EVAL_ERROR,
+	"Whitespace is not allowed in UDC string with alphabetical specification.\n",
+	'Whitespace with alphabetical specification (840-94 :910.45 :92 Bombard, A.).');
+clean();
+
+# Test.
+eval {
+	parse('830 (430.2)-311.6-321.2+92 Bobrowski, J.');
+};
+is($EVAL_ERROR,
+	"Whitespace is not allowed in UDC string with alphabetical specification.\n",
+	'Whitespace with alphabetical specification (830 (430.2)-311.6-321.2+92 Bobrowski, J.).');
 clean();
 
 # Test.

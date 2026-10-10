@@ -26,10 +26,11 @@ sub parse {
 	}
 
 	my $tokens = tokenize($input);
+	my $has_alpha_spec = any { $_->{'type'} eq 'ALPHA_SPEC' } @{$tokens};
 	my $normalized_tokens = [];
 	foreach my $tok_hr (@{$tokens}) {
 		my %parse_tok = %{$tok_hr};
-		_check_whitespace_token(\%parse_tok);
+		_check_whitespace_token(\%parse_tok, $has_alpha_spec);
 		_check_apos_aux_tokens(\%parse_tok);
 		_check_aux_time_tokens(\%parse_tok);
 		_check_number_token(\%parse_tok);
@@ -57,13 +58,16 @@ sub parse {
 }
 
 sub _check_whitespace_token {
-	my $tok = shift;
+	my ($tok, $has_alpha_spec) = @_;
 
 	if ($tok->{'type'} ne 'WHITESPACE') {
 		return;
 	}
 
-	err "Whitespace is not allowed in UDC string.",
+	my $message = $has_alpha_spec
+		? 'Whitespace is not allowed in UDC string with alphabetical specification.'
+		: 'Whitespace is not allowed in UDC string.';
+	err $message,
 		'position' => $tok->{'pos'},
 		'character' => substr($tok->{'value'}, 0, 1),
 	;

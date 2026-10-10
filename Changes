@@ -1,5 +1,6 @@
 0.09
  - Add support for [] in ALPHA_SPEC.
+ - Split errors with whitespace to two types (for ALPHA_SPEC).
  - Update author email.
 
 0.08 2026-05-08T09:46:06+02:00
