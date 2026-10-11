@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 22;
+use Test::More 'tests' => 23;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -56,6 +56,11 @@ is($ret_hr->{'ast'}{'operator'}, '::',
 	'Parse fixed relation operator.');
 is($ret_hr->{'tokens'}[1]{'value'}, '::',
 	'Tokenize fixed relation operator.');
+
+# Test.
+$ret_hr = parse('913((6-11)+(5-13)+(9-15))');
+is($ret_hr->{'tokens'}[1]{'value'}, '((6-11)+(5-13)+(9-15))',
+	'Parse nested parentheses in parenthesized auxiliary.');
 
 # Test.
 eval {

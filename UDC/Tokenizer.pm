@@ -74,9 +74,14 @@ sub tokenize {
 			next;
 		}
 
-		if ($input =~ /\G(\([^)]+\))/gc) {
-			_push_token(\@tokens, 'AUX_GROUP', $1, $start, 1);
-			next;
+		if (substr($input, $start, 1) eq '(') {
+			my $end = _find_parenthesis_end($input, $start);
+			if (defined $end) {
+				my $value = substr($input, $start, $end - $start);
+				pos($input) = $end;
+				_push_token(\@tokens, 'AUX_GROUP', $value, $start, 1);
+				next;
+			}
 		}
 
 		if ($input =~ /\G(\()/gc) {
@@ -128,6 +133,23 @@ sub tokenize {
 	}
 
 	return _merge_bracketed_alpha_specs(\@tokens);
+}
+
+sub _find_parenthesis_end {
+	my ($input, $start) = @_;
+	my $depth = 0;
+
+	for (my $pos = $start; $pos < length($input); $pos++) {
+		my $character = substr($input, $pos, 1);
+		if ($character eq '(') {
+			$depth++;
+		} elsif ($character eq ')') {
+			$depth--;
+			return $pos + 1 if $depth == 0;
+		}
+	}
+
+	return;
 }
 
 sub _check_whitespace {
