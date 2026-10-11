@@ -3,8 +3,6 @@ TODO
 1. Add doc.
 2. Add tests.
 5. There was '82‑343' in Wikipedia
-8. Tokenization in AUX_GROUP?
-12. Test issue (437,314) (AUX_GROUP), depends on 8)
 13. Fix '(438)06'
 16. Improve Tokenizer terminology. There are differences between e.g. 050 and
     50, same with dash prefix. And actual names are not fine.
@@ -56,4 +54,10 @@ OK [20260507] skim
 OK [20261010] skim
 
 9. Valid "913((6-11)+(5-13)+(9-15))" ?
+OK [20261011] skim
+
+8. Tokenization in AUX_GROUP?
+OK [20261011] skim
+
+12. Test issue (437,314) (AUX_GROUP), depends on 8)
 OK [20261011] skim

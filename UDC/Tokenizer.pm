@@ -13,7 +13,8 @@ Readonly::Array our @EXPORT_OK => qw(tokenize);
 our $VERSION = 0.09;
 
 sub tokenize {
-	my ($input) = @_;
+	my ($input, $position_offset) = @_;
+	$position_offset //= 0;
 	my @tokens;
 	my $left_double_quote = decode_utf8('“');
 	my $right_double_quote = decode_utf8('”');
@@ -78,8 +79,12 @@ sub tokenize {
 			my $end = _find_parenthesis_end($input, $start);
 			if (defined $end) {
 				my $value = substr($input, $start, $end - $start);
+				my $inner = substr($value, 1, length($value) - 2);
+				my $inner_tokens = tokenize($inner, $position_offset + $start + 1);
+				_offset_token_positions($inner_tokens, $start + 1);
 				pos($input) = $end;
 				_push_token(\@tokens, 'AUX_GROUP', $value, $start, 1);
+				$tokens[-1]->{'tokens'} = $inner_tokens;
 				next;
 			}
 		}
@@ -128,7 +133,7 @@ sub tokenize {
 
 		my $bad = substr($input, $start, 20);
 		err "Unrecognized input near '$bad'.",
-			'position' => $start,
+			'position' => $position_offset + $start,
 		;
 	}
 
@@ -146,6 +151,19 @@ sub _find_parenthesis_end {
 		} elsif ($character eq ')') {
 			$depth--;
 			return $pos + 1 if $depth == 0;
+		}
+	}
+
+	return;
+}
+
+sub _offset_token_positions {
+	my ($tokens, $offset) = @_;
+
+	foreach my $token (@{$tokens}) {
+		$token->{'pos'} += $offset;
+		if ($token->{'tokens'}) {
+			_offset_token_positions($token->{'tokens'}, $offset);
 		}
 	}
 
