@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 25;
+use Test::More 'tests' => 26;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -101,6 +101,14 @@ eval {
 is($EVAL_ERROR,
 	"Whitespace is not allowed in UDC string with alphabetical specification.\n",
 	'Whitespace with alphabetical specification in AUX_GROUP.');
+clean();
+
+# Test.
+eval {
+	parse('951.0+951.73+951.9+959.7+972.91"1945/1975"(075. 8)');
+};
+is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
+	'Whitespace in numeric AUX_GROUP.');
 clean();
 
 # Test.

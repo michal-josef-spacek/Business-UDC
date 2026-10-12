@@ -46,6 +46,11 @@ sub tokenize {
 			next;
 		}
 
+		if ($input =~ /\G(\.)(?=\s)/gc) {
+			_push_token(\@tokens, 'AUX_DOT', $1, $start, 1);
+			next;
+		}
+
 		if ($input =~ /\G(\.\d+(?:\.\d+)*)/gc) {
 			_push_token(\@tokens, 'AUX_DOT', $1, $start);
 			next;

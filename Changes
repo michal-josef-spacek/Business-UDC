@@ -1,6 +1,7 @@
 0.10
  - Code optimization.
  - Fix detection of ALPHA_SPEC inside of AUX_GROUP.
+ - Fix detection of whitespace in AUX_GROUP.
 
 0.09 2026-10-11T11:24:24+02:00
  - Add another case for whitespace issue ( = ).

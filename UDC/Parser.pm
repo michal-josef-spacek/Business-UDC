@@ -134,8 +134,13 @@ sub _check_aux_group_token {
 
 	my $inner_tokens = $tok->{'tokens'};
 	my $inner_position_offset = 0;
+	my $has_alpha_spec = _has_alpha_spec($inner_tokens);
 
 	foreach my $inner_tok (@{$inner_tokens}) {
+		if ($inner_tok->{'type'} eq 'WHITESPACE') {
+			_check_whitespace_token($inner_tok, $has_alpha_spec);
+			next;
+		}
 		if ($inner_tok->{'type'} eq 'AUX_GROUP') {
 			_check_aux_group_token($inner_tok, $inner_position_offset);
 			next;
