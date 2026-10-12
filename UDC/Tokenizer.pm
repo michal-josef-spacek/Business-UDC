@@ -142,6 +142,11 @@ sub tokenize {
 
 		my $a = decode_utf8('’');
 		my $acute = decode_utf8('´');
+		if ($input =~ /\G(')(?=\s)/gc) {
+			_push_token(\@tokens, 'APOS_AUX', $1, $start, 1);
+			next;
+		}
+
 		if ($input =~ /\G((?:'|`|&apos;|$a|$acute)\d+(?:\.\d+)*)/gc) {
 			_push_token(\@tokens, 'APOS_AUX', $1, $start);
 			next;

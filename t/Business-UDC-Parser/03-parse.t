@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 31;
+use Test::More 'tests' => 32;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -149,6 +149,14 @@ eval {
 };
 is($EVAL_ERROR, "Missing closing quotation mark '\"'.\n",
 	'Missing closing quotation mark (94(436+560)"1716/1718).');
+clean();
+
+# Test.
+eval {
+	parse("81' 367.625.44");
+};
+is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
+	"Whitespace is not allowed in UDC string (81' 367.625.44).");
 clean();
 
 # Test.

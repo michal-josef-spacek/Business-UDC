@@ -2,6 +2,7 @@
  - Add support for missing closing quotation mark.
  - Code optimization.
  - Fix detection of ALPHA_SPEC inside of AUX_GROUP.
+ - Fix detection of whitespace after apostrophe.
  - Fix detection of whitespace in AUX_GROUP.
 
 0.09 2026-10-11T11:24:24+02:00
