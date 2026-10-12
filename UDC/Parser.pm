@@ -27,7 +27,7 @@ sub parse {
 
 	my $tokens = tokenize($input);
 	_check_parentheses($tokens);
-	my $has_alpha_spec = any { $_->{'type'} eq 'ALPHA_SPEC' } @{$tokens};
+	my $has_alpha_spec = _has_alpha_spec($tokens);
 	my $normalized_tokens = [];
 	foreach my $tok_hr (@{$tokens}) {
 		my %parse_tok = %{$tok_hr};
@@ -109,6 +109,19 @@ sub _check_whitespace_token {
 		'position' => $tok->{'pos'},
 		'character' => substr($tok->{'value'}, 0, 1),
 	;
+}
+
+sub _has_alpha_spec {
+	my $tokens = shift;
+
+	foreach my $token (@{$tokens}) {
+		return 1 if $token->{'type'} eq 'ALPHA_SPEC';
+		if ($token->{'tokens'} && _has_alpha_spec($token->{'tokens'})) {
+			return 1;
+		}
+	}
+
+	return 0;
 }
 
 sub _check_aux_group_token {

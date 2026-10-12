@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 24;
+use Test::More 'tests' => 25;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -92,6 +92,15 @@ eval {
 };
 is($EVAL_ERROR, "Bad dot character in number.\n",
 	"Bad dot character in number ((123,34)).");
+clean();
+
+# Test.
+eval {
+	parse(decode_utf8('727.7 + 728.82(437.2Valašské Meziříčí)(083.85)'));
+};
+is($EVAL_ERROR,
+	"Whitespace is not allowed in UDC string with alphabetical specification.\n",
+	'Whitespace with alphabetical specification in AUX_GROUP.');
 clean();
 
 # Test.
@@ -205,7 +214,8 @@ clean();
 eval {
 	parse(decode_utf8('94(437.13 Jičín) "1939/1945"'));
 };
-is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
+is($EVAL_ERROR,
+	"Whitespace is not allowed in UDC string with alphabetical specification.\n",
 	'Whitespace is not allowed in UDC string (94(437.13 Jičín) "1939/1945").');
 clean();
 
@@ -213,6 +223,7 @@ clean();
 eval {
 	parse(decode_utf8("94(437.13 Jičín) ''1939/1945''"));
 };
-is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
+is($EVAL_ERROR,
+	"Whitespace is not allowed in UDC string with alphabetical specification.\n",
 	"Whitespace is not allowed in UDC string (94(437.13 Jičín) ''1939/1945'').");
 clean();
