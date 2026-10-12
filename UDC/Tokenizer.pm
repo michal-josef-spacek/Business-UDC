@@ -14,6 +14,7 @@ our $VERSION = 0.10;
 
 sub tokenize {
 	my ($input, $position_offset) = @_;
+
 	$position_offset //= 0;
 	my @tokens;
 	my $left_double_quote = decode_utf8('“');
