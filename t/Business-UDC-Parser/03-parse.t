@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 32;
+use Test::More 'tests' => 33;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -158,6 +158,11 @@ eval {
 is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
 	"Whitespace is not allowed in UDC string (81' 367.625.44).");
 clean();
+
+# Test.
+$ret_hr = parse('(73)339.5');
+is($ret_hr->{'ast'}{'prefixes'}[0]{'value'}, '(73)',
+	'Parse place auxiliary before main number ((73)339.5).');
 
 # Test.
 eval {
