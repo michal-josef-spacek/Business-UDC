@@ -1,4 +1,5 @@
 0.10
+ - Add support for missing closing quotation mark.
  - Code optimization.
  - Fix detection of ALPHA_SPEC inside of AUX_GROUP.
  - Fix detection of whitespace in AUX_GROUP.

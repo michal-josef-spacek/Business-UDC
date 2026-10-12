@@ -105,6 +105,16 @@ sub tokenize {
 			next;
 		}
 
+		if (substr($input, $start, 1) eq '"'
+			&& index($input, '"', $start + 1) < 0
+			&& index($input, "''", $start + 1) < 0
+			&& index($input, $right_double_quote, $start + 1) < 0) {
+			err "Missing closing quotation mark '\"'.",
+				'position' => $position_offset + $start,
+				'character' => '"',
+			;
+		}
+
 		if ($input =~ /\G(($time_quote)(?:(?!$time_quote)[\s\S])*$time_quote)/gc) {
 			my $value = $1;
 			if ($value =~ /\p{L}/u) {

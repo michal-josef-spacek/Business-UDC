@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 26;
+use Test::More 'tests' => 31;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -109,6 +109,46 @@ eval {
 };
 is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
 	'Whitespace in numeric AUX_GROUP.');
+clean();
+
+# Test.
+eval {
+	parse('016:794.1"1960/1972');
+};
+is($EVAL_ERROR, "Missing closing quotation mark '\"'.\n",
+	'Missing closing quotation mark (016:794.1"1960/1972).');
+clean();
+
+# Test.
+eval {
+	parse('355.48(100)"1914/1918');
+};
+is($EVAL_ERROR, "Missing closing quotation mark '\"'.\n",
+	'Missing closing quotation mark (355.48(100)"1914/1918).');
+clean();
+
+# Test.
+eval {
+	parse('355.48(436+560)"1716/1718');
+};
+is($EVAL_ERROR, "Missing closing quotation mark '\"'.\n",
+	'Missing closing quotation mark (355.48(436+560)"1716/1718).');
+clean();
+
+# Test.
+eval {
+	parse('91(437)"1918/1939)(091)');
+};
+is($EVAL_ERROR, "Missing closing quotation mark '\"'.\n",
+	'Missing closing quotation mark (91(437)"1918/1939)(091)).');
+clean();
+
+# Test.
+eval {
+	parse('94(436+560)"1716/1718');
+};
+is($EVAL_ERROR, "Missing closing quotation mark '\"'.\n",
+	'Missing closing quotation mark (94(436+560)"1716/1718).');
 clean();
 
 # Test.
