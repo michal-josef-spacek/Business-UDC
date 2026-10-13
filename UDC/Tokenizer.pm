@@ -163,8 +163,8 @@ sub tokenize {
 
 sub _find_parenthesis_end {
 	my ($input, $start) = @_;
-	my $depth = 0;
 
+	my $depth = 0;
 	for (my $pos = $start; $pos < length($input); $pos++) {
 		my $character = substr($input, $pos, 1);
 		if ($character eq '(') {
@@ -179,9 +179,9 @@ sub _find_parenthesis_end {
 }
 
 sub _offset_token_positions {
-	my ($tokens, $offset) = @_;
+	my ($tokens_ar, $offset) = @_;
 
-	foreach my $token (@{$tokens}) {
+	foreach my $token (@{$tokens_ar}) {
 		$token->{'pos'} += $offset;
 		if ($token->{'tokens'}) {
 			_offset_token_positions($token->{'tokens'}, $offset);
