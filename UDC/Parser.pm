@@ -85,7 +85,10 @@ sub _check_parentheses {
 	}
 
 	if ($left) {
-		err "Missing closing parenthesis ')'.",
+		my $message = $previous && $previous->{'type'} eq 'AUX_GROUP'
+			? "Extra opening parenthesis '('."
+			: "Missing closing parenthesis ')'.";
+		err $message,
 			'position' => $left->{'pos'},
 			'character' => '(',
 		;

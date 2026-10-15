@@ -1,4 +1,5 @@
 0.10
+ - Add check for extra opening parenthesis.
  - Add support for AUX_GROUP before main number.
  - Add support for missing closing quotation mark.
  - Code optimization.

@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 33;
+use Test::More 'tests' => 38;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -163,6 +163,17 @@ clean();
 $ret_hr = parse('(73)339.5');
 is($ret_hr->{'ast'}{'prefixes'}[0]{'value'}, '(73)',
 	'Parse place auxiliary before main number ((73)339.5).');
+
+# Test.
+foreach my $input ('((437.3)', '(94(437)', '913((437.31-15)',
+	'913((437.319)', '913((437.313)') {
+	eval {
+		parse($input);
+	};
+	is($EVAL_ERROR, "Extra opening parenthesis '('.\n",
+		"Extra opening parenthesis '('. ($input)");
+	clean();
+}
 
 # Test.
 eval {
