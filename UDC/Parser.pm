@@ -62,11 +62,12 @@ sub parse {
 sub _check_parentheses {
 	my $tokens_ar = shift;
 
-	my ($left, $previous);
+	my ($left, $previous, $has_operator_after_left);
 	foreach my $tok (@{$tokens_ar}) {
 		if ($tok->{'type'} eq 'LPAREN') {
 			$left = $tok;
 			$previous = $tok;
+			$has_operator_after_left = 0;
 			next;
 		}
 		if ($tok->{'type'} eq 'RPAREN') {
@@ -81,11 +82,16 @@ sub _check_parentheses {
 			}
 			$left = undef;
 		}
+		if ($left && $tok->{'type'} eq 'OP') {
+			$has_operator_after_left = 1;
+		}
 		$previous = $tok;
 	}
 
 	if ($left) {
-		my $message = $previous && $previous->{'type'} eq 'AUX_GROUP'
+		my $message = $has_operator_after_left
+			? "Missing closing parenthesis ')'."
+			: $previous && $previous->{'type'} eq 'AUX_GROUP'
 			? "Extra opening parenthesis '('."
 			: "Missing closing parenthesis ')'.";
 		err $message,

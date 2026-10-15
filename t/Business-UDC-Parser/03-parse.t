@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 38;
+use Test::More 'tests' => 39;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -174,6 +174,14 @@ foreach my $input ('((437.3)', '(94(437)', '913((437.31-15)',
 		"Extra opening parenthesis '('. ($input)");
 	clean();
 }
+
+# Test.
+eval {
+	parse('808.5(0-093.5:669(075)');
+};
+is($EVAL_ERROR, "Missing closing parenthesis ')'.\n",
+	"Missing closing parenthesis ')' (808.5(0-093.5:669(075)).");
+clean();
 
 # Test.
 eval {
