@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 40;
+use Test::More 'tests' => 41;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -189,6 +189,15 @@ eval {
 };
 is($EVAL_ERROR, "Missing closing parenthesis ')'.\n",
 	'Missing closing parenthesis in geographical auxiliary.');
+clean();
+
+# Test.
+eval {
+	parse('/048.8)');
+};
+is($EVAL_ERROR,
+	"Expected NUMBER, subgroup, or standalone auxiliary but got OP ('/').\n",
+	"Invalid leading character '/' (/048.8)).");
 clean();
 
 # Test.

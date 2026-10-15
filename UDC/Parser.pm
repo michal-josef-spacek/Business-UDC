@@ -72,6 +72,8 @@ sub _check_parentheses {
 		}
 		if ($tok->{'type'} eq 'RPAREN') {
 			if (! $left) {
+				return if $tokens_ar->[0]
+					&& $tokens_ar->[0]{'type'} eq 'OP';
 				my $message = $previous && $previous->{'type'} eq 'AUX_GROUP'
 					? "Extra closing parenthesis ')'."
 					: "Missing opening parenthesis '('.";
