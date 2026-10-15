@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 41;
+use Test::More 'tests' => 42;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -198,6 +198,14 @@ eval {
 is($EVAL_ERROR,
 	"Expected NUMBER, subgroup, or standalone auxiliary but got OP ('/').\n",
 	"Invalid leading character '/' (/048.8)).");
+clean();
+
+# Test.
+eval {
+	parse('323.272(729.1("1959"(042)=2=6=85');
+};
+is($EVAL_ERROR, "Extra opening parenthesis '('.\n",
+	"Extra opening parenthesis '(' (323.272(729.1(\"1959\"(042)=2=6=85).");
 clean();
 
 # Test.
