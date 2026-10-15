@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 39;
+use Test::More 'tests' => 40;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -181,6 +181,14 @@ eval {
 };
 is($EVAL_ERROR, "Missing closing parenthesis ')'.\n",
 	"Missing closing parenthesis ')' (808.5(0-093.5:669(075)).");
+clean();
+
+# Test.
+eval {
+	parse(decode_utf8('92Slaměník,F.(021):069(437.2Přerov+92Komenský,J.A.(021)'));
+};
+is($EVAL_ERROR, "Missing closing parenthesis ')'.\n",
+	'Missing closing parenthesis in geographical auxiliary.');
 clean();
 
 # Test.

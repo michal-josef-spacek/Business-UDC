@@ -82,7 +82,8 @@ sub _check_parentheses {
 			}
 			$left = undef;
 		}
-		if ($left && $tok->{'type'} eq 'OP') {
+		if ($left && ($tok->{'type'} eq 'OP'
+			|| $tok->{'type'} eq 'ALPHA_SPEC' && $tok->{'value'} =~ /[+:\/]/)) {
 			$has_operator_after_left = 1;
 		}
 		$previous = $tok;
