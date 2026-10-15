@@ -3,8 +3,8 @@ use warnings;
 
 use Business::UDC::Parser qw(parse);
 use English;
-use Error::Pure::Utils qw(clean);
-use Test::More 'tests' => 42;
+use Error::Pure::Utils qw(clean err_msg_hr);
+use Test::More 'tests' => 50;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -305,6 +305,9 @@ eval {
 };
 is($EVAL_ERROR, "Extra closing parenthesis ')'.\n",
 	"Extra closing parenthesis ')' ((437.3))).");
+my $err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 7, 'Get error (position = 7).');
+is($err_msg_hr->{'character'}, ')', "Get error (character = ')').");
 clean();
 
 # Test.
@@ -313,6 +316,9 @@ eval {
 };
 is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
 	"Whitespace is not allowed in UDC string (677.062 +65.01] :687.1(082)).");
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 7, 'Get error (position = 7).');
+is($err_msg_hr->{'character'}, ' ', "Get error (character = ' ').");
 clean();
 
 # Test.
@@ -322,6 +328,9 @@ eval {
 is($EVAL_ERROR,
 	"Whitespace is not allowed in UDC string with alphabetical specification.\n",
 	'Whitespace is not allowed in UDC string (94(437.13 Jičín) "1939/1945").');
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 16, 'Get error (position = 16).');
+is($err_msg_hr->{'character'}, ' ', "Get error (character = ' ').");
 clean();
 
 # Test.
@@ -331,4 +340,7 @@ eval {
 is($EVAL_ERROR,
 	"Whitespace is not allowed in UDC string with alphabetical specification.\n",
 	"Whitespace is not allowed in UDC string (94(437.13 Jičín) ''1939/1945'').");
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 16, 'Get error (position = 16).');
+is($err_msg_hr->{'character'}, ' ', "Get error (character = ' ').");
 clean();
