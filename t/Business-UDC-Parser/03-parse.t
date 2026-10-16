@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 52;
+use Test::More 'tests' => 55;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -210,6 +210,17 @@ clean();
 
 # Test.
 eval {
+	parse(decode_utf8('77.04:05 Photographik"1933/1940"]:061.43(437.2-2 Brno"1986"(036:084.1)'));
+};
+is($EVAL_ERROR, "Missing closing parenthesis ')'.\n",
+	'Missing closing parenthesis in geographical auxiliary before time auxiliary.');
+my $err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 53, 'Get error (position = 53).');
+is($err_msg_hr->{'character'}, ')', "Get error (character = ')').");
+clean();
+
+# Test.
+eval {
 	parse('78.089 (123)');
 };
 is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
@@ -297,7 +308,7 @@ eval {
 };
 is($EVAL_ERROR, "Missing closing parenthesis ')'.\n",
 	"Missing closing parenthesis ')' ((035).");
-my $err_msg_hr = err_msg_hr();
+$err_msg_hr = err_msg_hr();
 is($err_msg_hr->{'position'}, 4, 'Get error (position = 4).');
 is($err_msg_hr->{'character'}, ')', "Get error (character = ')').");
 clean();

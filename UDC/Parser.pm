@@ -62,12 +62,17 @@ sub parse {
 sub _check_parentheses {
 	my ($tokens_ar, $input_length) = @_;
 
-	my (@left, $previous, $has_operator_after_left);
+	my (@left, $previous, $has_operator_after_left, $operator_position,
+		$has_alpha_after_left, $has_time_after_alpha, $time_position);
 	foreach my $tok (@{$tokens_ar}) {
 		if ($tok->{'type'} eq 'LPAREN') {
 			push @left, $tok;
 			$previous = $tok;
 			$has_operator_after_left = 0;
+			$operator_position = undef;
+			$has_alpha_after_left = 0;
+			$has_time_after_alpha = 0;
+			$time_position = undef;
 			next;
 		}
 		if ($tok->{'type'} eq 'RPAREN') {
@@ -84,23 +89,41 @@ sub _check_parentheses {
 			}
 			pop @left;
 		}
-		if (@left && ($tok->{'type'} eq 'OP'
-			|| $tok->{'type'} eq 'ALPHA_SPEC' && $tok->{'value'} =~ /[+:\/]/)) {
+		if (@left && $tok->{'type'} eq 'OP') {
 			$has_operator_after_left = 1;
+			if (! defined $operator_position) {
+				$operator_position = $tok->{'pos'};
+			}
 		}
+		if (@left && $tok->{'type'} eq 'ALPHA_SPEC'
+			&& $tok->{'value'} =~ /([+:\/])/) {
+			$has_operator_after_left = 1;
+			$operator_position = $tok->{'pos'} + index($tok->{'value'}, $1)
+				if ! defined $operator_position;
+		}
+		$has_alpha_after_left = 1 if @left && $tok->{'type'} eq 'ALPHA_SPEC';
+		$has_time_after_alpha = 1
+			if @left && $has_alpha_after_left && $tok->{'type'} eq 'AUX_TIME';
+		$time_position = $tok->{'pos'}
+			if $has_time_after_alpha && ! defined $time_position;
 		$previous = $tok;
 	}
 
 	if (@left) {
 		my $left = $left[-1];
+		my $missing_closing = $has_operator_after_left || $has_time_after_alpha;
 		my $extra_opening = @left > 1
-			|| ! $has_operator_after_left
+			|| ! $missing_closing
 			&& $previous && $previous->{'type'} eq 'AUX_GROUP';
 		my $message = $extra_opening
 			? "Extra opening parenthesis '('."
 			: "Missing closing parenthesis ')'.";
 		err $message,
-			'position' => $extra_opening ? $left->{'pos'} : $input_length,
+			'position' => $extra_opening
+				? $left->{'pos'}
+				: defined $time_position ? $time_position
+				: defined $operator_position ? $operator_position
+				: $input_length,
 			'character' => $extra_opening ? '(' : ')',
 		;
 	}
