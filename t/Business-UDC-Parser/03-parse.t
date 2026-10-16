@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 50;
+use Test::More 'tests' => 52;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -297,6 +297,9 @@ eval {
 };
 is($EVAL_ERROR, "Missing closing parenthesis ')'.\n",
 	"Missing closing parenthesis ')' ((035).");
+my $err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 4, 'Get error (position = 4).');
+is($err_msg_hr->{'character'}, ')', "Get error (character = ')').");
 clean();
 
 # Test.
@@ -305,7 +308,7 @@ eval {
 };
 is($EVAL_ERROR, "Extra closing parenthesis ')'.\n",
 	"Extra closing parenthesis ')' ((437.3))).");
-my $err_msg_hr = err_msg_hr();
+$err_msg_hr = err_msg_hr();
 is($err_msg_hr->{'position'}, 7, 'Get error (position = 7).');
 is($err_msg_hr->{'character'}, ')', "Get error (character = ')').");
 clean();

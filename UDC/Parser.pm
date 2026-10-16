@@ -26,7 +26,7 @@ sub parse {
 	}
 
 	my $tokens_ar = tokenize($input);
-	_check_parentheses($tokens_ar);
+	_check_parentheses($tokens_ar, length($input));
 	my $has_alpha_spec = _has_alpha_spec($tokens_ar);
 	my $normalized_tokens_ar = [];
 	foreach my $tok_hr (@{$tokens_ar}) {
@@ -60,7 +60,7 @@ sub parse {
 }
 
 sub _check_parentheses {
-	my $tokens_ar = shift;
+	my ($tokens_ar, $input_length) = @_;
 
 	my (@left, $previous, $has_operator_after_left);
 	foreach my $tok (@{$tokens_ar}) {
@@ -93,16 +93,15 @@ sub _check_parentheses {
 
 	if (@left) {
 		my $left = $left[-1];
-		my $message = @left > 1
-			? "Extra opening parenthesis '('."
-			: $has_operator_after_left
-			? "Missing closing parenthesis ')'."
-			: $previous && $previous->{'type'} eq 'AUX_GROUP'
+		my $extra_opening = @left > 1
+			|| ! $has_operator_after_left
+			&& $previous && $previous->{'type'} eq 'AUX_GROUP';
+		my $message = $extra_opening
 			? "Extra opening parenthesis '('."
 			: "Missing closing parenthesis ')'.";
 		err $message,
-			'position' => $left->{'pos'},
-			'character' => '(',
+			'position' => $extra_opening ? $left->{'pos'} : $input_length,
+			'character' => $extra_opening ? '(' : ')',
 		;
 	}
 
