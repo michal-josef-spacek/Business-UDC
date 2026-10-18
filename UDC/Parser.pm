@@ -79,12 +79,13 @@ sub _check_parentheses {
 			if (! @left) {
 				return if $tokens_ar->[0]
 					&& $tokens_ar->[0]{'type'} eq 'OP';
-				my $message = $previous && $previous->{'type'} eq 'AUX_GROUP'
-					? "Extra closing parenthesis ')'."
-					: "Missing opening parenthesis '('.";
+				my $missing_opening = ! $previous || $previous->{'type'} ne 'AUX_GROUP';
+				my $message = $missing_opening
+					? "Missing opening parenthesis '('."
+					: "Extra closing parenthesis ')'.";
 				err $message,
-					'position' => $tok->{'pos'},
-					'character' => ')',
+					'position' => $missing_opening ? $tokens_ar->[0]{'pos'} : $tok->{'pos'},
+					'character' => $missing_opening ? '(' : ')',
 				;
 			}
 			pop @left;

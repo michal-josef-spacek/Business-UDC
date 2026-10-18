@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 55;
+use Test::More 'tests' => 61;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -284,6 +284,9 @@ eval {
 is($EVAL_ERROR,
 	"Whitespace is not allowed in UDC string with alphabetical specification.\n",
 	'Whitespace with alphabetical specification (830 (430.2)-311.6-321.2+92 Bobrowski, J.).');
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 3, 'Get error (position = 3).');
+is($err_msg_hr->{'character'}, ' ', "Get error (character = ' ').");
 clean();
 
 # Test.
@@ -292,6 +295,9 @@ eval {
 };
 is($EVAL_ERROR, "Missing opening parenthesis '('.\n",
 	"Missing opening parenthesis '(' (048.8)).");
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 0, 'Get error (position = 0).');
+is($err_msg_hr->{'character'}, '(', "Get error (character = '(').");
 clean();
 
 # Test.
@@ -300,6 +306,9 @@ eval {
 };
 is($EVAL_ERROR, "Missing opening parenthesis '('.\n",
 	"Missing opening parenthesis '(' (086.7)08).");
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 0, 'Get error (position = 0).');
+is($err_msg_hr->{'character'}, '(', "Get error (character = '(').");
 clean();
 
 # Test.
