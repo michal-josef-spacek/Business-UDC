@@ -160,6 +160,14 @@ sub tokenize {
 			next;
 		}
 
+		my $nonbreaking_hyphen = decode_utf8('‑');
+		if (substr($input, $start, 1) eq $nonbreaking_hyphen) {
+			err 'Bad hyphen character.',
+				'position' => $position_offset + $start,
+				'character' => $nonbreaking_hyphen,
+			;
+		}
+
 		my $bad = substr($input, $start, 20);
 		err "Unrecognized input near '$bad'.",
 			'position' => $position_offset + $start,

@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 70;
+use Test::More 'tests' => 73;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -301,6 +301,17 @@ eval {
 };
 is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
 	'Whitespace is not allowed in UDC string (885-93-343.4 = 393).');
+clean();
+
+# Test.
+eval {
+	parse(decode_utf8('82‑343'));
+};
+is($EVAL_ERROR, "Bad hyphen character.\n",
+	'Bad hyphen character (82‑343).');
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 2, 'Get bad hyphen position (position = 2).');
+is($err_msg_hr->{'character'}, decode_utf8('‑'), 'Get bad hyphen character.');
 clean();
 
 # Test.
