@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 67;
+use Test::More 'tests' => 70;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -162,6 +162,17 @@ is($EVAL_ERROR, "Missing closing quotation mark '\"'.\n",
 $err_msg_hr = err_msg_hr();
 is($err_msg_hr->{'position'}, 30, 'Get missing quotation mark position (position = 30).');
 is($err_msg_hr->{'character'}, '"', "Get missing quotation mark character (character = '\"').");
+clean();
+
+# Test.
+eval {
+	parse('929.3:378.961(437.11)"1657/178.3=71');
+};
+is($EVAL_ERROR, "Invalid year in time auxiliary.\n",
+	'Invalid ending year in time auxiliary.');
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 27, 'Get invalid year position (position = 27).');
+is($err_msg_hr->{'character'}, '1', "Get invalid year character (character = '1').");
 clean();
 
 # Test.

@@ -109,6 +109,13 @@ sub tokenize {
 			&& index($input, '"', $start + 1) < 0
 			&& index($input, "''", $start + 1) < 0
 			&& index($input, $right_double_quote, $start + 1) < 0) {
+			my $invalid_year_position = _invalid_time_year_position($input, $start);
+			if (defined $invalid_year_position) {
+				err 'Invalid year in time auxiliary.',
+					'position' => $position_offset + $invalid_year_position,
+					'character' => substr($input, $invalid_year_position, 1),
+				;
+			}
 
 			err "Missing closing quotation mark '\"'.",
 				'position' => $position_offset + _missing_quote_position($input, $start),
@@ -162,12 +169,30 @@ sub tokenize {
 	return _merge_bracketed_alpha_specs(\@tokens);
 }
 
+sub _invalid_time_year_position {
+	my ($input, $start) = @_;
+
+	my $value = substr($input, $start + 1);
+	if ($value =~ /^\d{4}\/(\d{1,3})(?=\D|$)/) {
+		return $start + 1 + 5;
+	}
+
+	return;
+}
+
 sub _missing_quote_position {
 	my ($input, $start) = @_;
 
 	my $value = substr($input, $start + 1);
-	my ($time) = $value =~ /^(\d+(?:[.\/]\d+)*)/;
+	my ($time) = $value =~ /^(\d{4}(?:\.\d+)*)/;
 	$time //= '';
+	my $rest = substr($value, length($time));
+	if (substr($rest, 0, 1) eq '/') {
+		my ($end_year) = $rest =~ m{^/(\d+)};
+		if (defined $end_year) {
+			$time .= '/' . $end_year;
+		}
+	}
 
 	return $start + 1 + length($time);
 }
