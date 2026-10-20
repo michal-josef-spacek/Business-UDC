@@ -4,9 +4,11 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 61;
+use Test::More 'tests' => 64;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
+
+my $err_msg_hr;
 
 # Test.
 my $ret_hr = parse('0/9');
@@ -153,6 +155,17 @@ clean();
 
 # Test.
 eval {
+	parse('92Gottwald,K.:323(437)"1948.02=4');
+};
+is($EVAL_ERROR, "Missing closing quotation mark '\"'.\n",
+	'Missing closing quotation mark before language auxiliary.');
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 30, 'Get missing quotation mark position (position = 30).');
+is($err_msg_hr->{'character'}, '"', "Get missing quotation mark character (character = '\"').");
+clean();
+
+# Test.
+eval {
 	parse("81' 367.625.44");
 };
 is($EVAL_ERROR, "Whitespace is not allowed in UDC string.\n",
@@ -214,7 +227,7 @@ eval {
 };
 is($EVAL_ERROR, "Missing closing parenthesis ')'.\n",
 	'Missing closing parenthesis in geographical auxiliary before time auxiliary.');
-my $err_msg_hr = err_msg_hr();
+$err_msg_hr = err_msg_hr();
 is($err_msg_hr->{'position'}, 53, 'Get error (position = 53).');
 is($err_msg_hr->{'character'}, ')', "Get error (character = ')').");
 clean();

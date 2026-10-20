@@ -1,4 +1,5 @@
 0.11
+ - Fix position computing of missing ".
 
 0.10 2026-10-18T22:07:31+02:00
  - Add check for extra opening parenthesis.

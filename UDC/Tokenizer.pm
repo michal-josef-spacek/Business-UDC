@@ -110,7 +110,7 @@ sub tokenize {
 			&& index($input, "''", $start + 1) < 0
 			&& index($input, $right_double_quote, $start + 1) < 0) {
 			err "Missing closing quotation mark '\"'.",
-				'position' => $position_offset + $start,
+				'position' => $position_offset + _missing_quote_position($input, $start),
 				'character' => '"',
 			;
 		}
@@ -159,6 +159,15 @@ sub tokenize {
 	}
 
 	return _merge_bracketed_alpha_specs(\@tokens);
+}
+
+sub _missing_quote_position {
+	my ($input, $start) = @_;
+
+	my $value = substr($input, $start + 1);
+	$value =~ s/^(\d[\d.\/\-]*).*$/$1/s;
+
+	return $start + 1 + length($value);
 }
 
 sub _find_parenthesis_end {
