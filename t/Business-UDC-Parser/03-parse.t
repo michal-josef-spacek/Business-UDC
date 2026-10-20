@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 64;
+use Test::More 'tests' => 67;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -161,6 +161,17 @@ is($EVAL_ERROR, "Missing closing quotation mark '\"'.\n",
 	'Missing closing quotation mark before language auxiliary.');
 $err_msg_hr = err_msg_hr();
 is($err_msg_hr->{'position'}, 30, 'Get missing quotation mark position (position = 30).');
+is($err_msg_hr->{'character'}, '"', "Get missing quotation mark character (character = '\"').");
+clean();
+
+# Test.
+eval {
+	parse('323.272(5-15)+(6-17)"2011/...');
+};
+is($EVAL_ERROR, "Missing closing quotation mark '\"'.\n",
+	'Missing closing quotation mark before incomplete time auxiliary.');
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 25, 'Get missing quotation mark position (position = 25).');
 is($err_msg_hr->{'character'}, '"', "Get missing quotation mark character (character = '\"').");
 clean();
 

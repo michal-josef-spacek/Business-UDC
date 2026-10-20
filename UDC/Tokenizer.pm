@@ -165,9 +165,10 @@ sub _missing_quote_position {
 	my ($input, $start) = @_;
 
 	my $value = substr($input, $start + 1);
-	$value =~ s/^(\d[\d.\/\-]*).*$/$1/s;
+	my ($time) = $value =~ /^(\d+(?:[.\/]\d+)*)/;
+	$time //= '';
 
-	return $start + 1 + length($value);
+	return $start + 1 + length($time);
 }
 
 sub _find_parenthesis_end {
