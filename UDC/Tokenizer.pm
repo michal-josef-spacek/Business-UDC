@@ -109,6 +109,7 @@ sub tokenize {
 			&& index($input, '"', $start + 1) < 0
 			&& index($input, "''", $start + 1) < 0
 			&& index($input, $right_double_quote, $start + 1) < 0) {
+
 			err "Missing closing quotation mark '\"'.",
 				'position' => $position_offset + _missing_quote_position($input, $start),
 				'character' => '"',
