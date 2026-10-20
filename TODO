@@ -5,7 +5,8 @@ TODO
 16. Improve Tokenizer terminology. There are differences between e.g. 050 and
     50, same with dash prefix. And actual names are not fine.
 17. Add support for '*' operator.
-18.
+18. Handle '578.82./.83'
+19.
 
 Applied
 =======
