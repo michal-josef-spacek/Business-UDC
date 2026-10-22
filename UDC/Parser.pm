@@ -304,6 +304,13 @@ sub _parse_expression {
 	my $left = _parse_term($state_hr);
 	while (my $tok = _peek($state_hr)) {
 		if (! is_operator_token($tok->{'type'})) {
+			if ($tok->{'type'} eq 'NUMBER') {
+				if (_time_ended_notation($left)) {
+					err 'Missing operator.',
+					'position' => $tok->{'pos'},
+				;
+				}
+			}
 			last;
 		}
 		if (! is_valid_operator($tok->{'value'})) {
@@ -391,6 +398,19 @@ sub _parse_expression {
 	}
 
 	return $left;
+}
+
+sub _time_ended_notation {
+	my $node = shift;
+
+	while ($node && $node->{'type'} eq 'BINARY_OP') {
+		$node = $node->{'right'};
+	}
+	return if ! $node || $node->{'type'} ne 'TERM';
+	return if ! $node->{'modifiers'} || ! @{$node->{'modifiers'}}
+		|| $node->{'modifiers'}[-1]{'type'} ne 'AUX_TIME';
+
+	return 1;
 }
 
 sub _parse_primary {

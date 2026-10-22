@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 91;
+use Test::More 'tests' => 95;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -143,6 +143,26 @@ is($EVAL_ERROR, "Bad dot character in number.\n",
 $err_msg_hr = err_msg_hr();
 is($err_msg_hr->{'position'}, 10, 'Get bad dot position (position = 10).');
 is($err_msg_hr->{'character'}, ',', "Get bad dot character (character = ',').");
+clean();
+
+# Test.
+eval {
+	parse('323.22(437)"1939/1945":943.7"1939/1945"940.5:329.15(437)(082)');
+};
+is($EVAL_ERROR, "Missing operator.\n",
+	'Missing operator after time auxiliary.');
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 39, 'Get missing operator position (position = 39).');
+clean();
+
+# Test.
+eval {
+	parse('016:355.01(43:436)"1866"+943.7"1866"943.07+943.6.08+92 Simon, J.');
+};
+is($EVAL_ERROR, "Missing operator.\n",
+	'Missing operator in term sequence.');
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 36, 'Get missing operator position (position = 36).');
 clean();
 
 # Test.

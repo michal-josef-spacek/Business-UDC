@@ -4,6 +4,7 @@
  - Add detection of invalid dot.
  - Add detection of invalid hyphen.
  - Add detection of invalid year in time auxiliary.
+ - Add detection of missing operator.
  - Fix detection of whitespace with alphabetical part.
  - Fix form after apostrophe range.
  - Fix position computing of missing ".
