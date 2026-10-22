@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 81;
+use Test::More 'tests' => 84;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -70,6 +70,17 @@ is($ret_hr->{'ast'}{'type'}, 'APOS_RANGE',
 	'Parse apostrophe auxiliary range.');
 is($ret_hr->{'ast'}{'modifiers'}[0]{'value'}, '-022.212',
 	'Parse form after apostrophe auxiliary range.');
+
+# Test.
+eval {
+	parse('578.82./.83');
+};
+is($EVAL_ERROR, "Extra dot '.'.\n",
+	"Extra dot '.' (578.82./.83).");
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 6, 'Get extra dot position (position = 6).');
+is($err_msg_hr->{'character'}, '.', "Get extra dot character (character = '.').");
+clean();
 
 # Test.
 eval {

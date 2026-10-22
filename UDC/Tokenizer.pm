@@ -46,6 +46,13 @@ sub tokenize {
 			next;
 		}
 
+		if (substr($input, $start, 2) eq './') {
+			err "Extra dot '.'.",
+				'position' => $position_offset + $start,
+				'character' => '.',
+			;
+		}
+
 		if ($input =~ /\G(\.)(?=\s)/gc) {
 			_push_token(\@tokens, 'AUX_DOT', $1, $start, 1);
 			next;

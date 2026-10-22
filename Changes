@@ -1,5 +1,6 @@
 0.11
  - Add detection of extra dash.
+ - Add detection of extra dot.
  - Add detection of invalid hyphen.
  - Add detection of invalid year in time auxiliary.
  - Fix form after apostrophe range.
