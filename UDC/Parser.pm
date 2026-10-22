@@ -243,7 +243,7 @@ sub _check_number_token {
 
 	$position_offset //= 0;
 
-	if ($tok->{'type'} ne 'NUMBER') {
+	if ($tok->{'type'} ne 'NUMBER' && $tok->{'type'} ne 'FORM') {
 		return;
 	}
 	if ($tok->{'value'} !~ /,/) {

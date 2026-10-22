@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 88;
+use Test::More 'tests' => 91;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -132,6 +132,17 @@ eval {
 };
 is($EVAL_ERROR, "Bad dot character in number.\n",
 	"Bad dot character in number ((123,34)).");
+clean();
+
+# Test.
+eval {
+	parse('885-32-322,1');
+};
+is($EVAL_ERROR, "Bad dot character in number.\n",
+	"Bad dot character in number (885-32-322,1).");
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 10, 'Get bad dot position (position = 10).');
+is($err_msg_hr->{'character'}, ',', "Get bad dot character (character = ',').");
 clean();
 
 # Test.

@@ -93,7 +93,7 @@ sub tokenize {
 			next;
 		}
 
-		if ($input =~ /\G(-\d+(?:\.\d+)*)/gc) {
+		if ($input =~ /\G(-\d+(?:[\.,]\d+)*)/gc) {
 			_push_token(\@tokens, 'FORM', $1, $start);
 			next;
 		}
