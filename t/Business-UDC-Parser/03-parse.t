@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 85;
+use Test::More 'tests' => 88;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -89,6 +89,17 @@ eval {
 is($EVAL_ERROR,
 	"Whitespace is not allowed in UDC string with alphabetical specification.\n",
 	'Whitespace with alphabetical specification in nested AUX_GROUP.');
+clean();
+
+# Test.
+eval {
+	parse('608.3(083.1"1962"');
+};
+is($EVAL_ERROR, "Missing closing parenthesis ')'.\n",
+	"Missing closing parenthesis ')' before time auxiliary.");
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 11, 'Get missing closing parenthesis position (position = 11).');
+is($err_msg_hr->{'character'}, ')', "Get missing closing parenthesis character (character = ')').");
 clean();
 
 # Test.

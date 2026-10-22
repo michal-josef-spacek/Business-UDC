@@ -63,7 +63,7 @@ sub _check_parentheses {
 	my ($tokens_ar, $input_length) = @_;
 
 	my (@left, $previous, $has_operator_after_left, $operator_position,
-		$has_alpha_after_left, $has_time_after_alpha, $time_position);
+		$has_alpha_after_left, $has_time_after_left, $time_position);
 	foreach my $tok (@{$tokens_ar}) {
 		if ($tok->{'type'} eq 'LPAREN') {
 			push @left, $tok;
@@ -71,7 +71,7 @@ sub _check_parentheses {
 			$has_operator_after_left = 0;
 			$operator_position = undef;
 			$has_alpha_after_left = 0;
-			$has_time_after_alpha = 0;
+			$has_time_after_left = 0;
 			$time_position = undef;
 			next;
 		}
@@ -103,16 +103,16 @@ sub _check_parentheses {
 				if ! defined $operator_position;
 		}
 		$has_alpha_after_left = 1 if @left && $tok->{'type'} eq 'ALPHA_SPEC';
-		$has_time_after_alpha = 1
-			if @left && $has_alpha_after_left && $tok->{'type'} eq 'AUX_TIME';
+		$has_time_after_left = 1
+			if @left && $tok->{'type'} eq 'AUX_TIME';
 		$time_position = $tok->{'pos'}
-			if $has_time_after_alpha && ! defined $time_position;
+			if $has_time_after_left && ! defined $time_position;
 		$previous = $tok;
 	}
 
 	if (@left) {
 		my $left = $left[-1];
-		my $missing_closing = $has_operator_after_left || $has_time_after_alpha;
+		my $missing_closing = $has_operator_after_left || $has_time_after_left;
 		my $extra_opening = @left > 1
 			|| ! $missing_closing
 			&& $previous && $previous->{'type'} eq 'AUX_GROUP';
