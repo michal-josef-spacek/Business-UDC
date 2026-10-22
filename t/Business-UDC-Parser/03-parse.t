@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 79;
+use Test::More 'tests' => 81;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -63,6 +63,13 @@ is($ret_hr->{'tokens'}[1]{'value'}, '::',
 $ret_hr = parse('913((6-11)+(5-13)+(9-15))');
 is($ret_hr->{'tokens'}[1]{'value'}, '((6-11)+(5-13)+(9-15))',
 	'Parse nested parentheses in parenthesized auxiliary.');
+
+# Test.
+$ret_hr = parse("81'36/'37-022.212");
+is($ret_hr->{'ast'}{'type'}, 'APOS_RANGE',
+	'Parse apostrophe auxiliary range.');
+is($ret_hr->{'ast'}{'modifiers'}[0]{'value'}, '-022.212',
+	'Parse form after apostrophe auxiliary range.');
 
 # Test.
 eval {

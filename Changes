@@ -2,6 +2,7 @@
  - Add detection of extra dash.
  - Add detection of invalid hyphen.
  - Add detection of invalid year in time auxiliary.
+ - Fix form after apostrophe range.
  - Fix position computing of missing ".
 
 0.10 2026-10-18T22:07:31+02:00

@@ -328,12 +328,22 @@ sub _parse_expression {
 				;
 			}
 
-			$left = {
+			my $range = {
 				type => 'APOS_RANGE',
 				base => $base,
 				from => $from->{'value'},
 				to => $right->{'value'},
 			};
+			if (my $modifier = _peek($state_hr)) {
+				if ($modifier->{'type'} eq 'FORM') {
+					_consume($state_hr);
+					$range->{'modifiers'} = [{
+						type => $modifier->{'type'},
+						value => $modifier->{'value'},
+					}];
+				}
+			}
+			$left = $range;
 
 			next;
 		}
