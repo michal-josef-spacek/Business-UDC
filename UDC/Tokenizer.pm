@@ -71,6 +71,16 @@ sub tokenize {
 			next;
 		}
 
+		if (substr($input, $start, 2) eq '--'
+			|| substr($input, $start, 1) eq '-'
+			&& $start + 1 >= length($input)) {
+			err "Extra dash '-'.",
+				'position' => $position_offset + $start
+					+ (substr($input, $start, 2) eq '--' ? 1 : 0),
+				'character' => '-',
+			;
+		}
+
 		if ($input =~ /\G(-)(?=\s)/gc) {
 			_push_token(\@tokens, 'FORM', $1, $start, 1);
 			next;

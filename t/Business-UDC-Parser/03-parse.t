@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 73;
+use Test::More 'tests' => 79;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -312,6 +312,28 @@ is($EVAL_ERROR, "Bad hyphen character.\n",
 $err_msg_hr = err_msg_hr();
 is($err_msg_hr->{'position'}, 2, 'Get bad hyphen position (position = 2).');
 is($err_msg_hr->{'character'}, decode_utf8('‑'), 'Get bad hyphen character.');
+clean();
+
+# Test.
+eval {
+	parse('27--243.37');
+};
+is($EVAL_ERROR, "Extra dash '-'.\n",
+	"Extra dash '-' (27--243.37).");
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 3, 'Get extra dash position (position = 3).');
+is($err_msg_hr->{'character'}, '-', "Get extra dash character (character = '-').");
+clean();
+
+# Test.
+eval {
+	parse('373/378-');
+};
+is($EVAL_ERROR, "Extra dash '-'.\n",
+	"Extra dash '-' (373/378-).");
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 7, 'Get trailing dash position (position = 7).');
+is($err_msg_hr->{'character'}, '-', "Get trailing dash character (character = '-').");
 clean();
 
 # Test.
