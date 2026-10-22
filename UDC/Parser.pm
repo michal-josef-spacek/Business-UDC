@@ -35,7 +35,7 @@ sub parse {
 		_check_apos_aux_tokens(\%parse_tok);
 		_check_aux_time_tokens(\%parse_tok);
 		_check_number_token(\%parse_tok);
-		_check_aux_group_token(\%parse_tok);
+		_check_aux_group_token(\%parse_tok, 0, $has_alpha_spec);
 		_normalize_alpha_spec_token(\%parse_tok);
 		push @{$normalized_tokens_ar}, \%parse_tok;
 	}
@@ -162,7 +162,7 @@ sub _has_alpha_spec {
 }
 
 sub _check_aux_group_token {
-	my ($tok, $position_offset) = @_;
+	my ($tok, $position_offset, $has_alpha_spec) = @_;
 
 	$position_offset //= 0;
 
@@ -172,7 +172,7 @@ sub _check_aux_group_token {
 
 	my $inner_tokens = $tok->{'tokens'};
 	my $inner_position_offset = 0;
-	my $has_alpha_spec = _has_alpha_spec($inner_tokens);
+	$has_alpha_spec ||= _has_alpha_spec($inner_tokens);
 
 	foreach my $inner_tok (@{$inner_tokens}) {
 		if ($inner_tok->{'type'} eq 'WHITESPACE') {
@@ -180,7 +180,7 @@ sub _check_aux_group_token {
 			next;
 		}
 		if ($inner_tok->{'type'} eq 'AUX_GROUP') {
-			_check_aux_group_token($inner_tok, $inner_position_offset);
+			_check_aux_group_token($inner_tok, $inner_position_offset, $has_alpha_spec);
 			next;
 		}
 

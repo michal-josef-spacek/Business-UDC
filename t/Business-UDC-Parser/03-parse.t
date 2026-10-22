@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 84;
+use Test::More 'tests' => 85;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -80,6 +80,15 @@ is($EVAL_ERROR, "Extra dot '.'.\n",
 $err_msg_hr = err_msg_hr();
 is($err_msg_hr->{'position'}, 6, 'Get extra dot position (position = 6).');
 is($err_msg_hr->{'character'}, '.', "Get extra dot character (character = '.').");
+clean();
+
+# Test.
+eval {
+	parse(decode_utf8('92 Brežněv,L.I.:[329(47).15+327(47)(042 5)"1970/1972"(081)'));
+};
+is($EVAL_ERROR,
+	"Whitespace is not allowed in UDC string with alphabetical specification.\n",
+	'Whitespace with alphabetical specification in nested AUX_GROUP.');
 clean();
 
 # Test.
