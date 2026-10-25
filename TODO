@@ -5,7 +5,6 @@ TODO
 16. Improve Tokenizer terminology. There are differences between e.g. 050 and
     50, same with dash prefix. And actual names are not fine.
 17. Add support for '*' operator.
-18. Handle '578.82./.83'
 19.
 
 Applied
@@ -66,3 +65,6 @@ OK [20261013] skim
 
 5. There was '82‑343' in Wikipedia
 OK [20261018] skim
+
+18. Handle '578.82./.83'
+OK [20261025] skim
