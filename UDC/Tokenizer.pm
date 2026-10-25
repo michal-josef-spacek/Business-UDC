@@ -10,7 +10,7 @@ use Unicode::UTF8 qw(decode_utf8);
 
 Readonly::Array our @EXPORT_OK => qw(tokenize);
 
-our $VERSION = 0.11;
+our $VERSION = 0.12;
 
 sub tokenize {
 	my ($input, $position_offset) = @_;
