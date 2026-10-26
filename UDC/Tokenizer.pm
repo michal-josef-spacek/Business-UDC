@@ -184,6 +184,14 @@ sub tokenize {
 			next;
 		}
 
+		if (substr($input, $start, 2) eq ',,'
+			&& substr($input, $start + 2, 1) =~ /\d/) {
+			err 'Bad quotation mark character.',
+				'position' => $position_offset + $start,
+				'character' => ',,',
+			;
+		}
+
 		my $nonbreaking_hyphen = decode_utf8('‑');
 		if (substr($input, $start, 1) eq $nonbreaking_hyphen) {
 			err 'Bad hyphen character.',

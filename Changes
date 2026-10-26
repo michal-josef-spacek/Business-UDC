@@ -1,4 +1,5 @@
 0.12
+ - Fix case with bad quotation mark.
  - Fix case with extra dot.
  - Fix special case of ALPHA_SPEC (TI-59/TI-58).
  - Fix special case of ALPHA_SPEC (transliterated cyrilic with apostrophe).
