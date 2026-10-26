@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 102;
+use Test::More 'tests' => 105;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -93,6 +93,16 @@ is($EVAL_ERROR, "Extra dot '.'.\n",
 	"Extra dot '.' before auxiliary group.");
 $err_msg_hr = err_msg_hr();
 is($err_msg_hr->{'position'}, 9, 'Get extra dot position (position = 9).');
+is($err_msg_hr->{'character'}, '.', "Get extra dot character (character = '.').");
+
+# Test.
+eval {
+	parse('016.:654.19-053.7"1964/1965');
+};
+is($EVAL_ERROR, "Extra dot '.'.\n",
+	"Extra dot '.' before relation operator.");
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 3, 'Get extra dot position (position = 3).');
 is($err_msg_hr->{'character'}, '.', "Get extra dot character (character = '.').");
 
 # Test.
