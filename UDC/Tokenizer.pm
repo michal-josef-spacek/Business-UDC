@@ -51,7 +51,8 @@ sub tokenize {
 			next;
 		}
 
-		if (substr($input, $start, 2) eq './') {
+		if (substr($input, $start, 2) eq './'
+			|| substr($input, $start, 2) eq '.(') {
 			err "Extra dot '.'.",
 				'position' => $position_offset + $start,
 				'character' => '.',

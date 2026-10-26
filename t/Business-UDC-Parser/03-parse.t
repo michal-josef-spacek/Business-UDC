@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 99;
+use Test::More 'tests' => 102;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -84,6 +84,16 @@ is($ret_hr->{'ast'}{'modifiers'}[0]{'value'}, "Cch'-si, J.",
 	'Parse alphabetical specification with apostrophe.');
 is($ret_hr->{'tokens'}[1]{'type'}, 'ALPHA_SPEC',
 	'Tokenize alphabetical specification with apostrophe as ALPHA_SPEC.');
+
+# Test.
+eval {
+	parse('001.5:664.(437)"1978"(082)');
+};
+is($EVAL_ERROR, "Extra dot '.'.\n",
+	"Extra dot '.' before auxiliary group.");
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 9, 'Get extra dot position (position = 9).');
+is($err_msg_hr->{'character'}, '.', "Get extra dot character (character = '.').");
 
 # Test.
 eval {
