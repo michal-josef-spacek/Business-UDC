@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 111;
+use Test::More 'tests' => 113;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -124,6 +124,16 @@ is($EVAL_ERROR, "Extra dot '.'.\n",
 $err_msg_hr = err_msg_hr();
 is($err_msg_hr->{'position'}, 15, 'Get extra dot position (position = 15).');
 is($err_msg_hr->{'character'}, '.', "Get extra dot character (character = '.').");
+
+# Test.
+eval {
+	parse('3KDS(42)1');
+};
+is($EVAL_ERROR, "Missing operator.\n",
+	'Missing operator after auxiliary group.');
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 8, 'Get missing operator position (position = 8).');
+clean();
 
 # Test.
 eval {
