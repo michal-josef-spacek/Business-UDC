@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Business::UDC::Tokenizer qw(tokenize);
-use Test::More 'tests' => 38;
+use Test::More 'tests' => 39;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -225,6 +225,25 @@ is_deeply(
 		},
 	],
 	'Tokenize nested parentheses in group (913((6-11)+(5-13)+(9-15))).',
+);
+
+# Test.
+$ret_ar = tokenize("929 Cch'-si, J.");
+is_deeply(
+	$ret_ar,
+	[
+		{
+			'pos' => 0,
+			'type' => 'NUMBER',
+			'value' => '929',
+		},
+		{
+			'pos' => 3,
+			'type' => 'ALPHA_SPEC',
+			'value' => " Cch'-si, J.",
+		},
+	],
+	"Tokenize alphabetical specification with apostrophe (929 Cch'-si, J.).",
 );
 
 # Test.

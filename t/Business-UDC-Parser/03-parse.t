@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 97;
+use Test::More 'tests' => 99;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -77,6 +77,13 @@ is($ret_hr->{'ast'}{'modifiers'}[0]{'value'}, 'TI-59/TI-58',
 	'Parse slash-separated alphabetical specification.');
 is($ret_hr->{'tokens'}[1]{'type'}, 'ALPHA_SPEC',
 	'Tokenize slash-separated alphabetical specification as ALPHA_SPEC.');
+
+# Test.
+$ret_hr = parse("929 Cch'-si, J.");
+is($ret_hr->{'ast'}{'modifiers'}[0]{'value'}, "Cch'-si, J.",
+	'Parse alphabetical specification with apostrophe.');
+is($ret_hr->{'tokens'}[1]{'type'}, 'ALPHA_SPEC',
+	'Tokenize alphabetical specification with apostrophe as ALPHA_SPEC.');
 
 # Test.
 eval {
