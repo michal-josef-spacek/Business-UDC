@@ -26,6 +26,11 @@ sub tokenize {
 	while (pos($input) < length($input)) {
 		my $start = pos($input);
 
+		if ($input =~ /\G( +(?=\p{L})\p{L}[\p{L}\p{N}]*(?:-\d+\/\p{L}[\p{L}\p{N}]*-\d+)+)/gcu) {
+			_push_token(\@tokens, 'ALPHA_SPEC', $1, $start, 1);
+			next;
+		}
+
 		if ($input =~ /\G( +(?=\p{L})\p{L}(?:[\p{L}\p{N}._#,]|\[[^\]]+\]|\+(?! )|\/(?! )|-(?!\d)| +(?=[\p{L}\p{N}._\[]))* *)/gcu) {
 			_push_token(\@tokens, 'ALPHA_SPEC', $1, $start, 1);
 			next;

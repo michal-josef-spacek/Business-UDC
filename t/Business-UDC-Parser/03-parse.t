@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 95;
+use Test::More 'tests' => 97;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -70,6 +70,13 @@ is($ret_hr->{'ast'}{'type'}, 'APOS_RANGE',
 	'Parse apostrophe auxiliary range.');
 is($ret_hr->{'ast'}{'modifiers'}[0]{'value'}, '-022.212',
 	'Parse form after apostrophe auxiliary range.');
+
+# Test.
+$ret_hr = parse('681.3 TI-59/TI-58(075)');
+is($ret_hr->{'ast'}{'modifiers'}[0]{'value'}, 'TI-59/TI-58',
+	'Parse slash-separated alphabetical specification.');
+is($ret_hr->{'tokens'}[1]{'type'}, 'ALPHA_SPEC',
+	'Tokenize slash-separated alphabetical specification as ALPHA_SPEC.');
 
 # Test.
 eval {
