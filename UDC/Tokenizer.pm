@@ -53,7 +53,9 @@ sub tokenize {
 
 		if (substr($input, $start, 2) eq './'
 			|| substr($input, $start, 2) eq '.('
-			|| substr($input, $start, 2) eq '.:') {
+			|| substr($input, $start, 2) eq '.:'
+			|| substr($input, $start, 1) eq '.'
+			&& $start + 1 >= length($input)) {
 			err "Extra dot '.'.",
 				'position' => $position_offset + $start,
 				'character' => '.',

@@ -4,7 +4,7 @@ use warnings;
 use Business::UDC::Parser qw(parse);
 use English;
 use Error::Pure::Utils qw(clean err_msg_hr);
-use Test::More 'tests' => 108;
+use Test::More 'tests' => 111;
 use Test::NoWarnings;
 use Unicode::UTF8 qw(decode_utf8);
 
@@ -114,6 +114,16 @@ is($EVAL_ERROR, "Bad quotation mark character.\n",
 $err_msg_hr = err_msg_hr();
 is($err_msg_hr->{'position'}, 13, 'Get bad quotation mark position (position = 13).');
 is($err_msg_hr->{'character'}, ',,', "Get bad quotation mark character (character = ',,').");
+
+# Test.
+eval {
+	parse('311.3(083.1):69.');
+};
+is($EVAL_ERROR, "Extra dot '.'.\n",
+	"Extra dot '.' at end of UDC string.");
+$err_msg_hr = err_msg_hr();
+is($err_msg_hr->{'position'}, 15, 'Get extra dot position (position = 15).');
+is($err_msg_hr->{'character'}, '.', "Get extra dot character (character = '.').");
 
 # Test.
 eval {
